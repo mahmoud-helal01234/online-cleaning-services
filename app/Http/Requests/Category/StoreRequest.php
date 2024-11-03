@@ -32,9 +32,9 @@ class StoreRequest extends FormRequest
 
         return [
 
-            'name_ar'               =>  'required|string|unique:categories,name_ar',
-            'name_en'               =>  'required|string|unique:categories,name_en',
-            'img_path'              =>  'required|' . FormRequestRulesConstant::ImageValidation ,
+            'name_ar'               =>  'required|string',
+            'name_en'               =>  'required|string',
+            'img_path'              =>  'required|' . FormRequestRulesConstant::ImageValidation 
         ];
     }
     public function messages(): array

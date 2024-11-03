@@ -26,7 +26,7 @@ class CategoriesService
         Log::info("start get categories");
 
 
-        $categories = Category::select('categories.id', 'name_ar', 'name_en', 'img_path')
+        $categories = Category::with('products.options')
             ->get();
         return $categories;
     }

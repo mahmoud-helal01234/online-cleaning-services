@@ -13,7 +13,7 @@ class OrderItem extends Model
 
     protected $fillable = [
 
-        'id','order_id', 'name_en','name_ar', 'quantity', 'price' 
+        'id', 'order_id', 'product_option_id', 'name_en', 'name_ar', 'quantity', 'price'
     ];
     protected $hidden = ['deleted_at'];
 
@@ -23,7 +23,6 @@ class OrderItem extends Model
     public function order()
     {
 
-        return $this->belongsTo(Order::class,'order_id', 'id');
+        return $this->belongsTo(Order::class, 'order_id', 'id');
     }
-
 }

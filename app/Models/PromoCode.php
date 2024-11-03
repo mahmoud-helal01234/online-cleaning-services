@@ -9,25 +9,21 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class PromoCode extends Model
 {
 
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    // , SoftDeletes;
 
     protected $fillable = [
-
-        'code', 'value', 'value_type', 'type', 'from', 'to', 'active'
+       'id','code', 'active', 'value', 'discount_type', 'max_fixed_value'
     ];
 
-    protected $hidden = [
-        'deleted_at',
-    ];
+    // protected $hidden = [
+    //     'deleted_at',
+    // ];
 
-    public function countries()
+    public function orders()
     {
 
-        return $this->hasMany(PromoCodeCountry::class, 'promo_code_id', 'id');
+        return $this->hasMany(Order::class, 'promo_code_id', 'id');
     }
-    public function companies()
-    {
 
-        return $this->hasMany(PromoCodeCompany::class, 'promo_code_id', 'id');
-    }
 }

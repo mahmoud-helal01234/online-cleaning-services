@@ -19,8 +19,8 @@ class PromoCodesService
     {
 
         $loggedInUser = $this->getLoggedInUser();
-        if($loggedInUser != null){
-            if($loggedInUser->role == "admin"){
+        if ($loggedInUser != null) {
+            if ($loggedInUser->role == "admin") {
                 if ($id) {
 
                     $data['promo_code'] = $this->getById($id);
@@ -76,24 +76,37 @@ class PromoCodesService
                 return DB::table('products')->whereNotIn('id', $productsIds)->select('name_en', 'name_ar', 'id')->get();
         }
     }
-    public function selectPromoCodes($companyId){
+    public function selectPromoCodes($companyId)
+    {
 
         $companiesService = new CompaniesService();
         $countryId = $companiesService->getById($companyId)->country_id;
-        $promoCodes = PromoCode::whereHas('companies',function ($query) use($companyId){
+        $promoCodes = PromoCode::whereHas('companies', function ($query) use ($companyId) {
             $query->where('company_id', $companyId);
-        })->orWhereHas('countries',function ($query) use($countryId){
+        })->orWhereHas('countries', function ($query) use ($countryId) {
             $query->where('country_id', $countryId);
         })->get();
 
 
         return $promoCodes;
-
     }
     public function getById($id)
     {
 
         $promoCode = PromoCode::find($id);
+
+        if ($promoCode == null)
+            throw new HttpResponseException($this->apiResponse(null, false, __('validation.not_exist')));
+
+        return $promoCode;
+    }
+
+    public function getByCode($code, $active = null)
+    {
+
+        $promoCode = PromoCode::where('code', $code)->when($active != null, function ($query) use ($active) {
+            $query->where('active', $active);
+        })->get()->first();
 
         if ($promoCode == null)
             throw new HttpResponseException($this->apiResponse(null, false, __('validation.not_exist')));
@@ -120,7 +133,7 @@ class PromoCodesService
 
                 DB::table('promo_codes_countries')->where('promo_code_id', $createdPromoCode['id'])->delete();
                 DB::table('promo_codes_countries')->insert($dataSet);
-            }else if($createdPromoCode->type == 'companies'){
+            } else if ($createdPromoCode->type == 'companies') {
 
                 $companies = $promoCode['companies_ids'];
                 $dataSet = [];
@@ -133,8 +146,7 @@ class PromoCodesService
 
                 DB::table('promo_codes_companies')->where('promo_code_id', $createdPromoCode['id'])->delete();
                 DB::table('promo_codes_companies')->insert($dataSet);
-
-            }else if($createdPromoCode->type == 'products'){
+            } else if ($createdPromoCode->type == 'products') {
                 $products = $promoCode['products_ids'];
                 $dataSet = [];
                 foreach ($products as $product) {
@@ -148,7 +160,6 @@ class PromoCodesService
                 DB::table('promo_codes_products')->insert($dataSet);
             }
             return $createdPromoCode;
-
         } catch (\Exception $ex) {
 
             throw new HttpResponseException($this->apiResponse(status: false));;
@@ -233,22 +244,22 @@ class PromoCodesService
             if ($promoCode->type == 'countries') {
 
                 $dataSet = [];
-                if(isset($newPromoCode['countries_ids'])){
+                if (isset($newPromoCode['countries_ids'])) {
                     foreach ($newPromoCode['countries_ids'] as $country) {
-                    $dataSet[] = [
-                        'country_id'  => $country,
-                        'promo_code_id'    => $promoCode->id,
-                    ];
-                }
+                        $dataSet[] = [
+                            'country_id'  => $country,
+                            'promo_code_id'    => $promoCode->id,
+                        ];
+                    }
                 }
 
                 DB::table('promo_codes_countries')->where('promo_code_id', $newPromoCode['id'])->delete();
                 DB::table('promo_codes_countries')->insert($dataSet);
-            }else if($promoCode->type == 'companies'){
+            } else if ($promoCode->type == 'companies') {
 
 
                 $dataSet = [];
-                if(isset($newPromoCode['companies_ids']) && $newPromoCode['companies_ids'] != null){
+                if (isset($newPromoCode['companies_ids']) && $newPromoCode['companies_ids'] != null) {
                     foreach ($promoCode['companies_ids'] as $company) {
                         $dataSet[] = [
                             'company_id'  => $company,
@@ -258,11 +269,10 @@ class PromoCodesService
                 }
                 DB::table('promo_codes_companies')->where('promo_code_id', $newPromoCode['id'])->delete();
                 DB::table('promo_codes_companies')->insert($dataSet);
-
-            }else if($promoCode->type == 'companies'){
+            } else if ($promoCode->type == 'companies') {
 
                 $dataSet = [];
-                if(isset($newPromoCode['products_ids']) && $newPromoCode['products_ids'] != null){
+                if (isset($newPromoCode['products_ids']) && $newPromoCode['products_ids'] != null) {
                     foreach ($newPromoCode['products_ids'] as $product) {
                         $dataSet[] = [
                             'product_id'  => $product,
@@ -274,7 +284,7 @@ class PromoCodesService
                 DB::table('promo_codes_products')->insert($dataSet);
             }
             return $promoCode;
-        } catch (\Exception $ex) {  
+        } catch (\Exception $ex) {
 
             throw new HttpResponseException($this->apiResponse(status: false));;
         }

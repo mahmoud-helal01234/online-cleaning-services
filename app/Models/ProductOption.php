@@ -13,7 +13,7 @@ class ProductOption extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'id', 'name_ar', 'name_en', 'price_unit_ar', 'price_unit_en', 'price', 'product_id', 'created_at', 'updated_at'
+        'id', 'name_ar', 'name_en', 'price', 'product_id', 'created_at', 'updated_at'
     ];
     protected $hidden = ['deleted_at'];
 

@@ -33,6 +33,7 @@ class LoginRequest extends FormRequest
 
             'email' => 'required|string|email|exists:users,email,active,1',
             'password' => 'required|string',
+            'device_token' => 'sometimes|string',
         ];
     }
 

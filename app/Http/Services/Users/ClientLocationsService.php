@@ -19,29 +19,21 @@ class ClientLocationsService
     {
 
         $user = $this->getLoggedInUser();
-        switch ($user->role) {
 
-            case "admin":
+        if ($user->role == "client")
+            $clientId = $user->id;
+        
+        return ClientLocation::when($clientId != null, function ($query) use ($clientId) {
+            $query->where('client_id',$clientId);
+        })->orderBy('created_at', 'DESC')->get();
 
-                $clientLocations = ClientLocation::when($clientId != null, function ($query) use ($clientId) {
-                    $query->where('client_id', $clientId);
-                })->orderBy('created_at', 'DESC')->get();
-                break;
-
-            case "client":  // tested and done
-
-                $clientLocations = ClientLocation::where('client_id', $user->id)->orderBy('created_at', 'DESC')->get();
-                break;
-        }
-
-        return $clientLocations;
     }
 
-    public function selectClientLocation($clientId){
+    public function selectClientLocation($clientId)
+    {
 
-        $clientLocation = ClientLocation::where('client_id',$clientId)->get();
+        $clientLocation = ClientLocation::where('client_id', $clientId)->get();
         return $clientLocation;
-
     }
     public function getById($id)
     {
@@ -67,20 +59,21 @@ class ClientLocationsService
             return $createdClientLocation;
         } catch (\Exception $ex) {
 
-            throw new HttpResponseException($this->apiResponse(status:false));
+            throw new HttpResponseException($this->apiResponse(status: false));
         }
     }
 
-    public function update($newClientLocation){
+    public function update($newClientLocation)
+    {
 
         $clientLocation = $this->getById($newClientLocation['id']);
-        try{
+        try {
 
             $clientLocation->update($newClientLocation);
             return $clientLocation;
-        }catch(\Exception $ex){
+        } catch (\Exception $ex) {
 
-            throw new HttpResponseException($this->apiResponse(status:false));;
+            throw new HttpResponseException($this->apiResponse(status: false));;
         }
     }
 

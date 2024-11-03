@@ -3,17 +3,18 @@
 namespace App\Http\Controllers\Orders;
 
 use App\Http\Traits\ResponsesTrait;
-use App\Http\Services\Orders\OrdersService;
+use App\Http\Controllers\Controller;
 use App\Http\Traits\FileUploadTrait;
 use App\Http\Requests\Order\StoreRequest;
-use App\Http\Controllers\Controller;
-
 use App\Http\Requests\Order\UpdateRequest;
+
+use App\Http\Services\Orders\OrdersService;
 
 use App\Http\Requests\Order\RateOrderRequest;
 use App\Http\Requests\Order\StoreItemRequest;
 use App\Http\Requests\Order\ChangeCompanyRequest;
 use App\Http\Requests\Order\UpdateOrderItemRequest;
+use App\Http\Requests\Order\ClientStoreOrderRequest;
 use App\Http\Requests\Order\AddProductsToCartRequest;
 
 class OrdersController extends Controller
@@ -32,16 +33,31 @@ class OrdersController extends Controller
     public function get()
     {
 
-        $orders = $this->ordersService->get(statuses :request('statuses') , clientId:request('client_id'), driverId:request('driver_id'), from :request('from') , to : request('to'));
+        $orders = $this->ordersService->get(statuses : request('statuses') , clientId:request('client_id'), 
+        pickupDriverId:request('pickup_driver_id'),deliveryDriverId:request('delivery_driver_id'), from :request('from') , to : request('to'));
         return $this->apiResponse($orders);
     }
 
-    public function create(StoreRequest $request)
+    public function getStatuses()
     {
-        // throw new HttpResponseException($this->apiResponse("sometimes|nullable|date_format:Y-m-d H:i". (request('pickup_start_date_time') ?  ("|after:" .Carbon::createFromFormat("Y-m-d H:i",request('pickup_start_date_time'))->addHours(23)->format("Y-m-d H:i")):"")));
+
+        $orderStatuses = $this->ordersService->getStatuses();
+        return $this->apiResponse($orderStatuses);
+    }
+
+    public function getForClient()
+    {
+
+        $orders = $this->ordersService->getForClient();
+        return $this->apiResponse($orders);
+    }
+
+    public function createForClient(ClientStoreOrderRequest $request)
+    {
+
         $data = $request->validated();
         
-        $this->ordersService->create($data);
+        $this->ordersService->createForClient($data);
         return $this->apiResponse();
     }
 
@@ -52,12 +68,6 @@ class OrdersController extends Controller
         return $this->apiResponse();
     }
 
-    public function getWorkingOn()
-    {
-
-        $orders = $this->ordersService->get(null,['in_cart','done']);
-        return $this->apiResponse($orders);
-    }
     public function getCartOrderDetails()
     {
 

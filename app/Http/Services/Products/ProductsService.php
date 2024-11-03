@@ -51,7 +51,6 @@ class ProductsService
 
             $createdProduct = Product::create($product);
             $productOptionsService = new ProductOptionsService();
-            $productOptionsService->delete(productId: $createdProduct->id);
 
             foreach ($product['options'] as $productOption) {
 

@@ -3,37 +3,186 @@
 namespace App\Http\Services\Orders;
 
 use Exception;
+use App\Models\User;
 use App\Models\Order;
 use App\Models\Driver;
 use App\Models\EasyOrder;
 use App\Models\OrderItem;
 use App\Models\PromoCode;
+use App\Models\DeviceToken;
 use App\Models\Notification;
 use App\Models\OrderComment;
 use App\Models\ProductOption;
 use App\Models\ClientLocation;
 use Illuminate\Support\Facades\DB;
 use App\Http\Traits\ResponsesTrait;
-use Illuminate\Support\Facades\App;
 use App\Http\Traits\ArraySliceTrait;
-use App\Http\Resources\OrdersResource;
 use App\Http\Traits\LoggedInUserTrait;
 use App\Http\Traits\NotificationTrait;
 use App\Models\OrderHaveBaseOrdersRate;
-use App\Http\Services\Users\ClientsService;
 use App\Http\Constants\OrderStatusesConstant;
-use App\Http\Services\Users\CompaniesService;
 use App\Http\Services\Orders\ClientOrdersService;
 use App\Models\TransportationPeriodAssignedToDriver;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Http\Services\DriversApp\DriversAppOrdersService;
-use App\Models\DeviceToken;
+use App\Models\Setting;
 
 class OrdersService
 {
 
     use ResponsesTrait, ArraySliceTrait;
     use LoggedInUserTrait, NotificationTrait;
+
+    private function create($order) {}
+
+    public function createForClient($order)
+    {
+        // dd($order);
+        $loggedInUser = $this->getLoggedInUser();
+        if ($loggedInUser != null) {
+
+            switch ($loggedInUser->role) {
+
+                case "client":
+
+                    $order['client_id'] = $loggedInUser->id;
+                    $order['status'] = "in_waiting_list";
+                    break;
+            }
+        } else {
+            $order['status'] = "confirmed";
+        }
+
+        $price = 0;
+        $productOptionIds = array_column($order['items'], 'id');
+
+        $productOptions = ProductOption::with('product')->whereIn('id', $productOptionIds)->get();
+
+        foreach ($order['items'] as $orderItem) {
+
+            $productOption = $productOptions->where('id', $orderItem['id'])->first();
+
+            $price +=  $productOption['price'] * $orderItem['quantity'];
+        }
+
+        // apply discount 
+        $promoCode = PromoCode::where('id', $order['promo_code_id'])->first();
+        $discountValue = 0;
+
+        if ($promoCode->discount_type == 'percentage') {
+            $discountValue = $price * $promoCode->value / 100;
+        } else {
+            $discountValue = $promoCode->value;
+        }
+
+        $discountValue = $discountValue > $promoCode->max_fixed_value ? $promoCode->max_fixed_value : $discountValue;
+
+        $price -= $discountValue;
+        
+        $minOrderPrice = Setting::first()->min_order_price;
+        
+        $price = $price < $minOrderPrice ? $minOrderPrice : $price;
+
+        $order['price'] = $price;
+
+        DB::transaction(function () use ($order, $productOptions, $loggedInUser) {
+
+            if ($loggedInUser != null) {
+                $createdOrder = Order::create($this->array_slice_assoc($order, [
+                    'client_id',
+                    'location_id',
+                    'price',
+                    'special_instructions',
+                    'status',
+                    'promo_code_id'
+                ]));
+            } else {
+                $createdOrder = Order::create($this->array_slice_assoc($order, [
+                    'client_name',
+                    'address',
+                    'phone',
+                    'preferred_pickup_time',
+                    'price',
+                    'promo_code_id'
+                ]));
+            }
+            // $totalPrice = 0;
+            foreach ($order['items'] as $orderItem) {
+
+                $productOption = $productOptions->where('id', $orderItem['id'])->first();
+
+                OrderItem::create([
+
+                    'order_id' => $createdOrder->id,
+                    'product_option_id' => $orderItem['id'],
+                    'name_en' => $productOption->product->name_en . " - " . $productOption->name_en,
+                    'name_ar' => $productOption->product->name_ar . " - " . $productOption->name_ar,
+
+                    'price' => $productOption->price,
+                    'quantity' => $orderItem['quantity']
+                ]);
+                // $totalPrice += $productOption->price * $orderItem['quantity'];
+            }
+
+            // $createdOrder->price = $totalPrice;
+            $createdOrder->save();
+            $subscribers = [];
+            $admins = User::with('deviceTokens')
+                ->get()
+                ->pluck('deviceTokens.*.device_token')
+                ->flatten(); // Flatten the array to get a list of tokens only
+            // if ($appointment->client->device_id != null) {
+            //     $subscribers[] = $appointment->client->device_id;
+            // }
+            $not = [
+                'appointment_id' => $createdOrder->id,
+                // 'client_id' => $client->id
+            ];
+            // Notification::create($not);
+            $clientName = $createdOrder->client != null ?
+                $createdOrder->client->name : $createdOrder->client_name;
+            $notification =
+                [
+                    'type' => "1",
+                    'title' => "  طلب زيارة لدي العميل   :-" . $clientName,
+                    'title_en' => "new appointment for client " . $clientName,
+                    'message'  => "  طلب جديد لدي العميل :-" . $clientName,
+                    'message_en' => "new appointment for client " . $clientName,
+                    // 'message' => $request->description_ar,
+                    // 'message_en' => $request->description_en,
+                    'order_id' => $createdOrder->id,
+
+                ];
+
+
+            // Log::info("before send  notification " .$subscribers );
+
+            if (!empty($admins) &&  $admins != null) {
+                // Log::info("send  notification " .$subscribers );
+                // 
+                //   Log::info( 
+
+                // $this->sendNotification($data_send = $notification, $subscribers);
+                $this->sendAdminNotification($data_send = $notification, []);
+            }
+
+            if (!empty($subscribers) &&  $subscribers != null) {
+
+                // $this->sendNotification($data_send = $notification, $subscribers);
+            }
+        });
+
+
+        // start notifications
+
+        // end notifications
+
+        try {
+        } catch (\Exception $ex) {
+
+            throw new HttpResponseException($this->apiResponse(status: false));
+        }
+    }
 
 
     public function driverOrderInDeliveryOrPickup($driverId)
@@ -74,11 +223,11 @@ class OrdersService
         } else if ($order->role == "drivers_app") {
             $driversAppOrdersService = new DriversAppOrdersService();
 
-            if (!$driversAppOrdersService->canLoggedInUserChangeOrderStatusTo($order, $loggedInUser, $status)) {
-                throw new HttpResponseException($this->apiResponse(status: false, message: __('validation.cannot_move_to_this_status')));
-            }
+            // if (!$driversAppOrdersService->canLoggedInUserChangeOrderStatusTo($order, $loggedInUser, $status)) {
+            //     throw new HttpResponseException($this->apiResponse(status: false, message: __('validation.cannot_move_to_this_status')));
+            // }
         }
-        $order->update(['status'=> $status]);
+        $order->update(['status' => $status]);
 
         // $pickupStatuses = ['in_cart', 'in_waiting_list', 'confirmed', 'in_picking', 'picked_up'];
 
@@ -116,18 +265,18 @@ class OrdersService
                 ]);
             }
         }
-        $notification=
-        [
-            'type' => "1",
-            'title_ar' => "حالة الطلب تغيرت",
-            'title_en' => "Order status changed",
-            'message_ar' => $order['status'] . " تم تغيير حالة الطلب ",
-            'message_en' =>  $order['status'] . " Order status changed",
-        ];
+        $notification =
+            [
+                'type' => "1",
+                'title_ar' => "حالة الطلب تغيرت",
+                'title_en' => "Order status changed",
+                'message_ar' => $order['status'] . " تم تغيير حالة الطلب ",
+                'message_en' =>  $order['status'] . " Order status changed",
+            ];
 
-        $subscribers= $userDeviceTokens;
+        $subscribers = $userDeviceTokens;
 
-        $this->sendNotification($data_send=$notification, $users=$subscribers);
+        $this->sendNotification($data_send = $notification, $users = $subscribers);
     }
 
 
@@ -223,33 +372,25 @@ class OrdersService
         }
     }
 
-    // SELECT DRIVER MANGER To ORDER (PICKUP || DELIVERY) DRIVER TO ADD  DRIVERS MANGER TO ORDER
-    public function getDriversManagerToOrder($transportationPeriodsAssignedToDriverId)
+
+    public function getTotalPriceForOrder($items)
     {
-
-        $transportationPeriodsAssignedToDriverService = new TransportationPeriodsAssignedToDriversService();
-        $transportationPeriodsAssignedToDriver = $transportationPeriodsAssignedToDriverService->getById($transportationPeriodsAssignedToDriverId);
-        $driversManagerId = $transportationPeriodsAssignedToDriver->driver->manager->id;
-
-        return $driversManagerId;
-
-    }
-    public function getTotalPriceForOrder($items){
         $totalPrice = 0;
-        foreach($items as $item){
+        foreach ($items as $item) {
             $price = $item['price'] * $item['quantity'];
             $totalPrice += $price;
         }
         return $totalPrice;
     }
-    public function getDiscountViaPromoCode($promoCode){
+    public function getDiscountViaPromoCode($promoCode)
+    {
 
-        $promoCode = PromoCode::where('code',$promoCode)->first();
+        $promoCode = PromoCode::where('code', $promoCode)->first();
         $discount['value'] = $promoCode->value;
         $discount['value_type'] = $promoCode->value_type;
         return $discount;
     }
-    public function create($order)
+    public function create_($order)
     {
 
         try {
@@ -260,23 +401,22 @@ class OrdersService
                     break;
             }
 
-        $createdOrder = null;
+            $createdOrder = null;
 
-            if(isset($order['type']) && $order["type"] == "items"){
-                if($order['price'] == null || $order['price'] == 0)
+            if (isset($order['type']) && $order["type"] == "items") {
+                if ($order['price'] == null || $order['price'] == 0)
                     $order['price'] = $this->getTotalPriceForOrder($order['items']);
             }
             //$this->checkDriverCapacity($order);
-            if(isset($order['promo_code']) && $order['promo_code'] != null){
+            if (isset($order['promo_code']) && $order['promo_code'] != null) {
 
                 $discount = $this->getDiscountViaPromoCode($order['promo_code']);
                 $order['discount_value'] = $discount['value'];
                 $order['discount_value_type'] = $discount['value_type'];
             }
 
-            if ($order['role'] == "drivers_app" ) {
+            if ($order['role'] == "drivers_app") {
                 $order['status'] = 'confirmed';
-
             } else {
                 $order['status'] = 'in_cart';
                 // if(isset($order['pickup_driver_assigned_to_transportation_period_id']))
@@ -398,27 +538,27 @@ class OrdersService
                         ]);
                     }
                 }
-                $notification=
-                [
-                    'type' => "1",
-                    'title_ar' => "تم انشاء طلب",
-                    'title_en' => "Order created",
-                    'message_ar' => $createdOrder['status'] . " تم انشاء طلب" ,
-                    'message_en' =>  $createdOrder['status'] . " Order has been created",
-                ];
+                $notification =
+                    [
+                        'type' => "1",
+                        'title_ar' => "تم انشاء طلب",
+                        'title_en' => "Order created",
+                        'message_ar' => $createdOrder['status'] . " تم انشاء طلب",
+                        'message_en' =>  $createdOrder['status'] . " Order has been created",
+                    ];
 
-                $subscribers= $userDeviceTokens;
+                $subscribers = $userDeviceTokens;
 
-                $this->sendNotification($data_send=$notification, $users=$subscribers);
+                $this->sendNotification($data_send = $notification, $users = $subscribers);
             });
             return $createdOrder;
-
         } catch (\Exception $ex) {
 
             throw new HttpResponseException($this->apiResponse(status: false));
         }
     }
-    public function temp(){
+    public function temp()
+    {
         $order = Order::find(199)->pickupTrasportationPeriodAssignedToDriver->driver_id;
         return $order;
     }
@@ -454,10 +594,6 @@ class OrdersService
     {
         $order = $this->getById($newOrder['id']);
         try {
-        if(isset($newOrder['pickup_driver_assigned_to_transportation_period_id']))
-            $newOrder['drivers_manager_id'] = $this->getDriversManagerToOrder($newOrder['pickup_driver_assigned_to_transportation_period_id']);
-        if(isset($newOrder['delivery_driver_assigned_to_transportation_period_id']))
-            $newOrder['drivers_manager_id'] = $this->getDriversManagerToOrder($newOrder['delivery_driver_assigned_to_transportation_period_id']);
             $CurrentOrderStatus = $order->status;
             DB::transaction(function () use ($order, $newOrder) {
                 $order->update($newOrder);
@@ -519,10 +655,10 @@ class OrdersService
                     } else {
                         $driverId = $order->delivery_driver_assigned_to_transportation_period_id->driver_id;
                     }
-                    if($driverId == null){
+                    if ($driverId == null) {
                         $driverId = $order->clientOrder->company_id;
                     }
-                    if($driverId == null){
+                    if ($driverId == null) {
                         $driverId = $order->driversAppOrder->user_id;
                     }
 
@@ -547,64 +683,119 @@ class OrdersService
                             ]);
                         }
                     }
-                    $notification=
-                    [
-                        'type' => "1",
-                        'title_ar' => "حالة الطلب تغيرت",
-                        'title_en' => "Order status changed",
-                        'message_ar' => $order['status'] . "حالة الطلب تغيرت ",
-                        'message_en' =>  $order['status'] . " Order status changed",
-                    ];
+                    $notification =
+                        [
+                            'type' => "1",
+                            'title_ar' => "حالة الطلب تغيرت",
+                            'title_en' => "Order status changed",
+                            'message_ar' => $order['status'] . "حالة الطلب تغيرت ",
+                            'message_en' =>  $order['status'] . " Order status changed",
+                        ];
 
-                    $subscribers= $userDeviceTokens;
+                    $subscribers = $userDeviceTokens;
 
-                    $this->sendNotification($data_send=$notification, $users=$subscribers);
+                    $this->sendNotification($data_send = $notification, $users = $subscribers);
                 }
             }
 
             return true;
-
         } catch (\Exception $ex) {
 
             throw new HttpResponseException($this->apiResponse(status: false));;
         }
     }
+    public function getStatuses()
+    {
+
+        return OrderStatusesConstant::statuses;
+    }
+
     public function get(
         $statuses = null,
         $clientId = null,
-        $driverId,
+        $deliveryDriverId = null,
+        $pickupDriverId = null,
         $from = null,
-        $to = null, 
+        $to = null,
     ) {
 
         $loggedInUser = $this->getLoggedInUser();
         $orders = Order::when(
             $statuses != null,
             function ($query) use ($statuses) {
-                $query->whereIn('status', $statuses)->select();
+                $query->whereIn('status', $statuses);
             }
         );
 
-        if($loggedInUser->role == "admin" || $loggedInUser->role == "customer_service"){
+        $orders = $orders->when(
+            $clientId != null,
+            function ($query) use ($clientId) {
+                $query->where('client_id', $clientId);
+            }
+        );
 
-        }
-        else if($loggedInUser == "driver"){
+        $orders = $orders->when(
+            $deliveryDriverId != null,
+            function ($query) use ($deliveryDriverId) {
+                $query->where('delivery_driver_id', $deliveryDriverId);
+            }
+        );
 
-        }
-        else if($loggedInUser == "client"){
+        $orders = $orders->when(
+            $pickupDriverId != null,
+            function ($query) use ($pickupDriverId) {
+                $query->where('pickup_driver_id', $pickupDriverId);
+            }
+        );
 
+        $orders = $orders->when(
+            $from != null,
+            function ($query) use ($from) {
+                $query->where('created_at', '>=', $from);
+            }
+        );
+
+        $orders = $orders->when(
+            $to != null,
+            function ($query) use ($to) {
+                $query->where('created_at', '<=', $to);
+            }
+        );
+
+        if ($loggedInUser->role == "admin" || $loggedInUser->role == "customer_service") {
+        } else if ($loggedInUser == "driver") {
+        } else if ($loggedInUser == "client") {
         }
+
+        $orders->with(
+            [
+                'promoCode',
+                'location',
+                'client',
+                'items',
+                'pickupDriver:id,name,email',
+                'deliveryDriver:id,name,email',
+            ]
+        );
+
+        return $orders->orderBy('id', 'DESC')->get();
+    }
+
+    public function getForClient()
+    {
+
+        $loggedInUser = $this->getLoggedInUser();
+        $orders = Order::where('client_id', $loggedInUser->id);
 
         $orders->with(
             [
                 'items',
                 'pickupDriver:id,name,email',
-                'deliveryDriver:id,name,email',   
+                'deliveryDriver:id,name,email',
             ]
-            );
+        );
 
         return $orders->orderBy('id', 'DESC')->get();
-
     }
     public function getOrderBasedonRole($orders, $loggedInUser)
     {
@@ -643,7 +834,7 @@ class OrdersService
                 break;
 
             case "company":
-                $orders = $orders->where('role', 'client')->where('status','!=', 'in_cart')->where('status','!=', 'in_waiting_list')->WhereHas('clientOrder', function ($query) use ($loggedInUser) {
+                $orders = $orders->where('role', 'client')->where('status', '!=', 'in_cart')->where('status', '!=', 'in_waiting_list')->WhereHas('clientOrder', function ($query) use ($loggedInUser) {
 
                     $query->where('company_id', $loggedInUser->id);
                 })->orWhere(function ($query) use ($loggedInUser) {
@@ -655,7 +846,7 @@ class OrdersService
 
                 break;
             case "drivers_manager":
-                $orders = $orders->where('status','!=', 'in_cart')->where('status','!=', 'in_waiting_list')->where(function ($query) use ($loggedInUser) {
+                $orders = $orders->where('status', '!=', 'in_cart')->where('status', '!=', 'in_waiting_list')->where(function ($query) use ($loggedInUser) {
 
                     $query->where('drivers_manager_id', $loggedInUser->id)->orWhereHas('driversAppOrder', function ($query) use ($loggedInUser) {
                         $query->where('user_id', $loggedInUser->id);
@@ -997,11 +1188,6 @@ class OrdersService
                 $clientOrdersService = new ClientOrdersService();
                 $clientOrdersService->delete($order->id);
                 break;
-            case "drivers_app":
-
-                $driversAppService = new DriversAppOrdersService();
-                $driversAppService->delete($order->id);
-                break;
         }
 
         /// DELETE ORDER ITEM
@@ -1042,11 +1228,10 @@ class OrdersService
 
             case 'client':
                 return $orderRole == 'client';
-            case 'company' :
-                case "drivers_manager":
+            case 'company':
+            case "drivers_manager":
                 return $orderRole == 'drivers_app';
         }
-
     }
 
     public function canUserAccessOrderDetails($user, $orderId)
@@ -1060,14 +1245,12 @@ class OrdersService
         switch ($order->role) {
             case "client":
                 $clientOrdersService = new ClientOrdersService();
-               return $clientOrdersService->canUserAccessOrderDetails($order , $user);
+                return $clientOrdersService->canUserAccessOrderDetails($order, $user);
 
             case "drivers_app":
                 $driversAppService = new DriversAppOrdersService();
-               return $driversAppService->canUserAccessOrderDetails($order , $user);
-
+                // return $driversAppService->canUserAccessOrderDetails($order, $user);
         }
-
     }
 
     public function canUserAddCommentToOrder($user, $orderId)
@@ -1110,8 +1293,8 @@ class OrdersService
                 break;
             case "company":
                 switch ($order->role) {
-                    // case 'client':
-                    //     return $order->clientOrder->company_id == $loggedInUser->id;
+                        // case 'client':
+                        //     return $order->clientOrder->company_id == $loggedInUser->id;
 
                     case 'drivers_app':
                         return ($order->driversAppOrder->user_id == $loggedInUser->id && $order->status != "in_delivery");
@@ -1120,41 +1303,14 @@ class OrdersService
             case "drivers_manager":
 
                 return $order->driversAppOrder->user_id == $loggedInUser->id;
-            // case "client":
-            //     if ($order->clientOrder->client_id == $loggedInUser->id && $order->status == "in_cart")
-            //         return true;
+                // case "client":
+                //     if ($order->clientOrder->client_id == $loggedInUser->id && $order->status == "in_cart")
+                //         return true;
         }
         return false;
     }
 
-    public function canUserUpdateOrder($user, $order)
-    {
-        switch ($order->role) {
 
-<<<<<<< HEAD:app/Http/Services/OrdersService.php
-                // case 'client':
-
-                //     if ($order->clientOrder->company_id == $user->id)
-                //         return true;
-
-            case 'drivers_app':
-
-                $driversAppOrdersService = new DriversAppOrdersService();
-                return $driversAppOrdersService->canUserUpdateOrder($user, $order);
-=======
-            case 'client':
-
-                if (!$this->canUserRoleUpdateOrderRole($user->role, $order->role)) {
-                    return false;
-                }
-
-            case 'drivers_app':
-                $driversAppOrdersService = new DriversAppOrdersService();
-                return $driversAppOrdersService->canUserUpdateOrder($user,$order);
-
->>>>>>> 92e74da04e455e1892cf056762f2cc93354b21c6:app/Http/Services/Orders/OrdersService.php
-        }
-    }
 
     public function canUserCreateOrderWithCompanyIdAndTransportationPeriodAssignedToDriver($transportationPeriodsAssignedToDriverId, $driverId, $companyId, $pickupDate)
     {
@@ -1188,15 +1344,5 @@ class OrdersService
 
         // return true;
 
-    }
-    public function isChoosenCompanyCountryInClientCountry($clientId, $companyId){
-        // check if company is choosen in client country and return true
-        $clientService = new ClientsService();
-        $companyService = new CompaniesService();
-        $client = $clientService->getById($clientId);
-        $company = $companyService->getById($companyId);
-        if($client->country_id == $company->country_id)
-            return true;
-        throw new HttpResponseException($this->apiResponse(null, false, __('company_not_in_client_country')));
     }
 }

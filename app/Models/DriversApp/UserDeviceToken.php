@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class UserDeviceToken extends Model
 {
     use HasFactory;
-    protected $table = 'users_device_tokens';
+    protected $table = 'user_device_tokens';
     protected $fillable = [
         'user_id' , 'device_token', 'created_at'
     ];

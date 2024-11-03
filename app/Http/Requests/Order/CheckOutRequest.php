@@ -10,7 +10,6 @@ use App\Rules\PickupTransportationPeriodRule;
 use Illuminate\Contracts\Validation\Validator;
 use App\Rules\PromoCodeForCompanyOrCountryRule;
 use App\Http\Services\Orders\ClientOrdersService;
-use App\Rules\DeliveryTypeTransportionPeriodRule;
 use App\Rules\IsProductOptionBelongToCompanyRule;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Rules\CapacityOfTransportationPeriodAssignedToDriverRule;

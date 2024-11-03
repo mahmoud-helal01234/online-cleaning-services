@@ -19,6 +19,7 @@ class AddPromoCodeToOrderRequest extends FormRequest
      */
     public function authorize()
     {
+
         return true;
     }
 
@@ -32,8 +33,8 @@ class AddPromoCodeToOrderRequest extends FormRequest
 
         return
             [
-                'promo_code' => ['required','exists:promo_codes,code', new PromoCodeForCompanyOrCountryRule(request('company_id'))],
-                'order_id' => ['required','numeric','exists:orders,id'],
+                'promo_code' => ['required', 'exists:promo_codes,code', new PromoCodeForCompanyOrCountryRule(request('company_id'))],
+                'order_id' => ['required', 'numeric', 'exists:orders,id'],
                 'company_id' => 'required|numeric|exists:companies,user_id',
             ];
     }

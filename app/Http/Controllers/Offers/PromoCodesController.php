@@ -30,6 +30,14 @@ class PromoCodesController extends Controller
         $promoCodes = $this->promoCodesService->get($id,request('active'));
         return $this->apiResponse($promoCodes);
     }
+
+    public function getByCode($code)
+    {
+
+        $promoCodes = $this->promoCodesService->getByCode($code);
+        return $this->apiResponse($promoCodes);
+    }
+
     public function selectPromoCodes($companyId)
     {
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Services\Users;
 
 use App\Models\User;
@@ -17,10 +18,12 @@ use App\Mail\ResetPasswordTokenEmail;
 use Illuminate\Support\Facades\Config;
 use App\Http\Resources\Auth\ClientLoginResource;
 use App\Http\Traits\LoggedInUserTrait;
+use App\Models\DriversApp\UserDeviceToken;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 
-class AuthService{
+class AuthService
+{
 
     use ResponsesTrait;
     use FileUploadTrait;
@@ -31,9 +34,10 @@ class AuthService{
 
         return $this->getLoggedInUser();
     }
-    public function socialLogin(){}
+    public function socialLogin() {}
 
-    public function clientLogin($user){
+    public function clientLogin($user)
+    {
 
         // Config::set('jwt.user', 'App\Models\Client');
         // Config::set('auth.providers.users.model', \App\Models\Client::class);
@@ -44,7 +48,7 @@ class AuthService{
 
         if (!$token) {
 
-            throw new HttpResponseException($this->apiResponse(null,false,__('validation.failed.failed')));
+            throw new HttpResponseException($this->apiResponse(null, false, __('validation.failed.failed')));
         }
         $user = Auth::guard('authenticate-clients')->user();
         $user['token'] = $token;
@@ -52,7 +56,8 @@ class AuthService{
         //return ClientLoginResource::make($user);
     }
 
-    public function clientRegister($client){
+    public function clientRegister($client)
+    {
 
         // Config::set('jwt.user', 'App\Models\User');
         // Config::set('auth.providers.users.model', \App\Models\User::class);
@@ -60,7 +65,7 @@ class AuthService{
         $password = $client['password'];
         $createdClient = Client::create($client);
 
-        $credentials =  ['email' => $client['email'], 'password' => $password ];
+        $credentials =  ['email' => $client['email'], 'password' => $password];
         // $token = Auth::guard('authenticate-clients')->attempt($credentials);
         $token = JWTAuth::fromUser($createdClient);
         // $token = Auth::guard('authenticate-clients')->attempt($credentials);
@@ -69,58 +74,61 @@ class AuthService{
         return ClientLoginResource::make($createdClient);
     }
 
-    public function sendPasswordResetTokenUsers($email){
+    public function sendPasswordResetTokenUsers($email)
+    {
 
-        $user = User::where('email',$email)->first();
-        if($user != null){
-            UserPasswordReset::where(["user_id" => $user->id ])->delete();
+        $user = User::where('email', $email)->first();
+        if ($user != null) {
+            UserPasswordReset::where(["user_id" => $user->id])->delete();
             $token = Str::random(5);
             UserPasswordReset::create(["user_id" => $user->id, "token" => $token]);
             Mail::to($email)->send(new ResetPasswordTokenEmail($token));
         }
-
     }
 
-    public function resetPasswordUsers($data){
+    public function resetPasswordUsers($data)
+    {
 
         $email = $data['email'];
-        $userPasswordReset = UserPasswordReset::where(["token" => $data['token'] ])->whereHas('user', function ($q) use ($email){
-            $q->where('email',$email);
+        $userPasswordReset = UserPasswordReset::where(["token" => $data['token']])->whereHas('user', function ($q) use ($email) {
+            $q->where('email', $email);
         })->first();
 
-        if($userPasswordReset == null)
-            throw new HttpResponseException($this->apiResponse(null,false,__("auth.failed")));
-        User::where('id',$userPasswordReset->user_id)->update(['password' => Hash::make($data['password'])]);
+        if ($userPasswordReset == null)
+            throw new HttpResponseException($this->apiResponse(null, false, __("auth.failed")));
+        User::where('id', $userPasswordReset->user_id)->update(['password' => Hash::make($data['password'])]);
         $userPasswordReset->delete();
     }
 
 
-    public function sendPasswordResetTokenClients($email){
+    public function sendPasswordResetTokenClients($email)
+    {
 
-        $client = Client::where('email',$email)->first();
-        if($client != null){
-            ClientPasswordReset::where(["client_id" => $client->id ])->delete();
+        $client = Client::where('email', $email)->first();
+        if ($client != null) {
+            ClientPasswordReset::where(["client_id" => $client->id])->delete();
             $token = Str::random(5);
             ClientPasswordReset::create(["client_id" => $client->id, "token" => $token]);
             Mail::to($email)->send(new ResetPasswordTokenEmail($token));
         }
-
     }
 
-    public function resetPasswordClients($data){
+    public function resetPasswordClients($data)
+    {
 
         $email = $data['email'];
-        $clientPasswordReset = ClientPasswordReset::where(["token" => $data['token'] ])->whereHas('client', function ($q) use ($email){
-            $q->where('email',$email);
+        $clientPasswordReset = ClientPasswordReset::where(["token" => $data['token']])->whereHas('client', function ($q) use ($email) {
+            $q->where('email', $email);
         })->first();
 
-        if($clientPasswordReset == null)
-            throw new HttpResponseException($this->apiResponse(null,false,__("auth.failed")));
-        Client::where('id',$clientPasswordReset->client_id)->update(['password' => Hash::make($data['password'])]);
+        if ($clientPasswordReset == null)
+            throw new HttpResponseException($this->apiResponse(null, false, __("auth.failed")));
+        Client::where('id', $clientPasswordReset->client_id)->update(['password' => Hash::make($data['password'])]);
         $clientPasswordReset->delete();
     }
 
-    public function login($user){
+    public function login($user)
+    {
 
         // Config::set('jwt.user', 'App\Models\User');
         // Config::set('auth.providers.users.model', \App\Models\User::class);
@@ -130,12 +138,18 @@ class AuthService{
 
         if (!$token) {
 
-            throw new HttpResponseException($this->apiResponse(null,false,__('wrong email or password')));
+            throw new HttpResponseException($this->apiResponse(null, false, __('wrong email or password')));
         }
 
-        $user = Auth::guard('authenticate')->user();
-        $user['token'] = $token;
-        return $user;
-    }
+        $authUser = Auth::guard('authenticate')->user();
+        if (isset($user['device_token']) &&  $user['device_token'] != null) {
+            UserDeviceToken::create([
 
+                'user_id' => $authUser->id,
+                'device_token' => $user['device_token'],
+            ]);
+        }
+        $authUser['token'] = $token;
+        return $authUser;
+    }
 }

@@ -46,7 +46,8 @@ class StoreRequest extends OrderStoreRequest
                 $rulesBased = [
 
                     'items' => 'required|array',
-                    'items.*.id' => ['required', 'distinct', 'company_option:' . request('company_id')],
+                    'items.*.id' => ['required', 
+                    'distinct', 'company_option:' . request('company_id')],
                     'items.*.quantity' => 'required|integer|min:1'
                 ];
                 break;

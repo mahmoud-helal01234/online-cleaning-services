@@ -4,7 +4,6 @@ namespace App\Http\Services\Users;
 
 use App\Models\Client;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use App\Http\Traits\ResponsesTrait;
 use App\Http\Traits\ArraySliceTrait;
 use App\Http\Traits\FileUploadTrait;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +17,6 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 class ClientsService
 {
 
-    use ResponsesTrait;
     use FileUploadTrait;
     use ArraySliceTrait;
     use LoggedInUserTrait;
@@ -65,15 +63,7 @@ class ClientsService
 
         return ClientLoginResource::make($createdClient);
     }
-    public function selectClientsByCompany($companyId){
-
-        $companiesService = new CompaniesService();
-        $company = $companiesService->getById($companyId);
-
-        $clientsForCompany = Client::where('country_id',$company->country_id)->get();
-        return $clientsForCompany;
-
-    }
+    
     public function updateProfile($newClient)
     {
 

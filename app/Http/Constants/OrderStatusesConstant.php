@@ -7,7 +7,6 @@ class OrderStatusesConstant
 {
 
     public const statuses = [
-
         'in_cart',
         'in_waiting_list',
         'confirmed',
@@ -15,9 +14,9 @@ class OrderStatusesConstant
         'picked_up',
         'in_processing',
         'processing_done',
-        'in_delivery_box',
         'in_delivery',
-        'delivered'
+        'delivered',
+        'done'
     ];
     
 }

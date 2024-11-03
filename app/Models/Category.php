@@ -14,7 +14,7 @@ class Category extends Model
 {
     use HasFactory;
     use FileUploadTrait;
-    use ImagesTrait,SoftDeletes;
+    use ImagesTrait, SoftDeletes;
     protected $fillable = [
 
         'id',
@@ -27,7 +27,11 @@ class Category extends Model
     protected $hidden = ['pivot', 'deleted_at'];
     public function setImgPathAttribute($value)
     {
-        $this->attributes['img_path'] = $this->uploadFile($value,'images/categories', $this->attributes['img_path'] ?? "");
+        $this->attributes['img_path'] = $this->uploadFile($value, 'images/categories', $this->attributes['img_path'] ?? "");
     }
 
+    public function products()
+    {
+        return $this->hasMany(Product::class, "category_id", "id");
+    }
 }

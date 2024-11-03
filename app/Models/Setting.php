@@ -14,7 +14,7 @@ class Setting extends Model
 
     protected $fillable = [
 
-        'id', 'first_order_cash_back_value', 'first_order_cash_back_value_type',
+        'id', 'min_order_price','first_order_cash_back_value', 'first_order_cash_back_value_type',
         'invitation_code_owner_cash_value', 'invitation_code_owner_cash_value_type',
         'invitation_code_user_cash_value', 'invitation_code_user_cash_value_type'
     ];

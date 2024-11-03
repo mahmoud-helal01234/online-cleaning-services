@@ -1,0 +1,165 @@
+
+/* Base font size for desktop (typically around 16px) */
+html {
+    font-size: 16px;
+}
+  
+  /* Body text can now be set once with rem units, which are relative to the html font size */
+  body {
+    font-size: 1rem; /* 16px */
+  }
+
+  p {
+    font-size: 0.8rem;
+  }
+  
+  /* Example of an element using rem 
+   h1 {
+    font-size: 3rem;  48px 
+  } */
+  
+  /* Media Query for Tablets (768px and below) */
+  @media (max-width: 768px) {
+    html {
+      font-size: 14px; /* Reduce base font size for smaller screens */
+    }
+  }
+  
+  /* Media Query for Mobile (480px and below) */
+  @media (max-width: 480px) {
+    html {
+      font-size: 12px; /* Even smaller font size for mobile */
+    }
+  }
+
+
+
+.navbar {
+
+    position: sticky;
+    top: 0;
+    overflow: hidden;
+    z-index: 1000;
+
+}
+
+.content-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 20px;
+}
+
+/* Image styles */
+.responsive-image {
+    width: 50%;  /* Image takes up half of the container width */
+    height: auto; /* Let the height be proportional to the width */
+    max-height: 400px; /* Set a max height for large screens */
+    object-fit: fill; /* Ensures the image scales nicely */
+}
+
+/* Text beside the image */
+.text-content {
+    width: 45%;
+}
+
+/* Adjustments for mobile */
+@media (max-width: 768px) {
+    /* Stack image and text vertically on small screens */
+    .content-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    /* Reduce the image height for mobile */
+    .responsive-image {
+        width: 100%;  /* Image now takes up full width */
+        height: auto;
+        max-height: 200px; /* Set a smaller max height for mobile */
+    }
+
+    /* Adjust text width to fit full width of container */
+    .text-content {
+        width: 100%;
+    }
+}
+
+.btn-toolbar {
+    display: flex;
+    justify-content: center; /* Centers the button group horizontally */
+    width: 100%; /* Ensure it takes up the full width */
+    margin-top: 20px; /* Optional: Add some margin if needed */
+}
+
+/* Optional: Center the buttons within the group, though they will already be aligned */
+.btn-group {
+    display: flex;
+    justify-content: center; /* Ensures buttons are aligned within the group */
+}
+
+.popup-image-container{
+    width: 100%;
+}
+
+.product-option {
+    /* border : 2px solid black; */
+    padding: 2em;
+}
+
+
+.cart-options{
+    border : 2px solid black;
+    margin-bottom: 2em;
+}
+
+html { font-size: calc(0.65em + 0.55vw); }
+
+.cart-input{
+    margin: 1em;
+}
+
+
+.product-option{
+    font-size: 14px;
+    font-weight: bold;
+}
+
+
+
+/* floating icons */
+
+/* Styles for floating icons */
+.floating-icons {
+    position: fixed;
+    bottom: 2rem;
+    right: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 1000;
+}
+
+.floating-icons .btn {
+
+    border-radius: 40%;
+    transition: all 0.3s ease;
+}
+
+.btn-call {
+    background-color: whitesmoke;
+}
+
+.btn-whatsapp {
+    background-color: whitesmoke;
+}
+
+
+.floating-icons .btn:hover {
+    transform: scale(1.3);
+    /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); */
+}
+
+.floating-icon {
+    font-size: 2.1rem;
+}

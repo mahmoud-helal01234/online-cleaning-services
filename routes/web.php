@@ -13,6 +13,24 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::group(['middleware' => [], 'namespace' => 'App\Http\Controllers'], function () {
+    Route::get('/', 'WebsitePagesController@homePage');
+
 });
+
+
+// Route::get('/what-we-do', function () {
+    
+//     return view('what-we-do');
+
+// });
+
+Route::get('lang/{locale}', function ($locale) {
+    if (!in_array($locale, ['en', 'ar'])) {
+        abort(400);
+    }
+    
+    session(['locale' => $locale]);
+    return redirect()->back();
+});
+

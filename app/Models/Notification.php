@@ -13,8 +13,7 @@ class Notification extends Model
 
     protected $fillable = [
 
-
-        'user_id', 'title_ar', 'title_en', 'order_id', 'body_ar', 'body_en', 'action', 'action_data',
+        'user_id', 'title', 'body'
     ];
     public $timestamps = false;
 }

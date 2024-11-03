@@ -35,9 +35,7 @@ class IsLocationBelongToClientRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        return ClientLocation::where('id', $value)
-            ->Where('client_id', $this->clientId)
-            ->exists();
+        return ;
     }
 
     /**
