@@ -1,0 +1,134 @@
+    .btn-dark:hover {
+        background-color: #343a40 !important; /* Darker shade of black */
+    }
+
+    .modal-body {
+        background-color: #f9f9f9;
+        padding: 20px;
+    }
+    
+    .card {
+        border: 1px solid #ddd;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .card-body {
+        padding: 20px;
+    }
+    
+    .cart-options {
+        font-size: 1.2em;
+        color: #555;
+    }
+    
+    /* .product-option {
+        background-color: #f1f1f1;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    
+    .product-option p {
+        font-size: 1.1em;
+        color: #333;
+    } */
+    
+    form .row {
+        margin-bottom: 1rem;
+    }
+    
+    .col-form-label {
+        font-weight: bold;
+        color: #444;
+    }
+    
+    .form-control {
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+    
+    .form-control:focus {
+        border-color: #5cb85c;
+        box-shadow: 0 0 5px rgba(92, 184, 92, 0.4);
+    }
+    
+    button[type="submit"] {
+        background-color: #5cb85c;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    
+    button[type="submit"]:hover {
+        background-color: #4cae4c;
+    }
+    
+    /* General Styling */
+/* .product-option {
+    padding: 15px;
+    border: 1px solid #ddd;
+    background-color: #f8f9fa;
+    transition: box-shadow 0.3s ease;
+}
+
+/* Hover effect to give a subtle shadow */
+.product-option:hover {
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Text styling for product name */
+.product-option .text-primary {
+    font-size: 1.1rem;
+    color: #007bff;
+}
+
+/* Quantity display */
+.product-option .quantity {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Styling for the price */
+.product-option .price {
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+/* Styling for the total price */
+.product-option .total-price {
+    font-weight: bold;
+}
+
+/* Button styling */
+.product-option .btn {
+    padding: 5px 10px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+}
+
+/* Change button color on hover */
+.product-option .btn:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+/* Responsive Styling */
+@media (max-width: 768px) {
+    
+    
+    .product-option .price,
+    .product-option .quantity,
+    .product-option .total-price {
+        font-size: 1rem;
+    }
+    .product-option .btn {
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+} 

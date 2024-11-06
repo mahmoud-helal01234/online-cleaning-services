@@ -18,7 +18,7 @@ return [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         // 'redirect' => env('GOOGLE_REDIRECT'),
-        'redirect' => 'http://127.0.0.1:8000/api/login/google/callback',
+        'redirect' => 'https://aquacare-laundry.com/api/login/google/callback',
     ],
 
     'github' => [
@@ -31,7 +31,7 @@ return [
         'client_id' => env('FACEBOOK_CLIENT_ID'),
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
         //'redirect' => env('FACEBOOK_REDIRECT_URI'),
-        'redirect' => 'http://127.0.0.1:8000/api/login/facebook/callback',
+        'redirect' => 'https://aquacare-laundry.com/api/login/facebook/callback',
     ],
 
 

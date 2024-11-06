@@ -109,7 +109,7 @@ class PromoCodesService
         })->get()->first();
 
         if ($promoCode == null)
-            throw new HttpResponseException($this->apiResponse(null, false, __('validation.not_exist')));
+            throw new HttpResponseException($this->apiResponse(null, false, __('validation.not_exist'),statusCode: 404));
 
         return $promoCode;
     }

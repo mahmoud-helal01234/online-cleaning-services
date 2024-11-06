@@ -66,21 +66,22 @@ class OrdersService
         }
 
         // apply discount 
-        $promoCode = PromoCode::where('id', $order['promo_code_id'])->first();
-        $discountValue = 0;
+        if (isset($order['promo_code_id'])) {
+            $promoCode = PromoCode::where('id', $order['promo_code_id'])->first();
+            $discountValue = 0;
 
-        if ($promoCode->discount_type == 'percentage') {
-            $discountValue = $price * $promoCode->value / 100;
-        } else {
-            $discountValue = $promoCode->value;
+            if ($promoCode->discount_type == 'percentage') {
+                $discountValue = $price * $promoCode->value / 100;
+            } else {
+                $discountValue = $promoCode->value;
+            }
+
+            $discountValue = $discountValue > $promoCode->max_fixed_value ? $promoCode->max_fixed_value : $discountValue;
+
+            $price -= $discountValue;
         }
-
-        $discountValue = $discountValue > $promoCode->max_fixed_value ? $promoCode->max_fixed_value : $discountValue;
-
-        $price -= $discountValue;
-        
         $minOrderPrice = Setting::first()->min_order_price;
-        
+
         $price = $price < $minOrderPrice ? $minOrderPrice : $price;
 
         $order['price'] = $price;

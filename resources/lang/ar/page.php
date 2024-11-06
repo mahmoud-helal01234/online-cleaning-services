@@ -11,7 +11,16 @@ return [
     'enter_phone' => 'الرجاء إدخال رقم هاتفك',
     'enter_address' => 'الرجاء إدخال عنوانك بالتفصيل',
     'place_order' => 'إتمام الطلب الآن',
+    'discounted_price' => 'السعر بعد الخصم',
+    'apply' => 'تطبيق',
+    'promo_code' => 'رمز الخصم',
+    'enter_promo_code' => 'أدخل رمز الخصم',
+    'invalid_promo_code' => 'رمز الخصم غير صالح',
+    'discount' => 'الخصم',
+    'pre_total' => 'المجموع المبدئي',
 
+    'discount_applied_successfully' => 'تم تطبيق الخصم بنجاح',
+    'change' => 'تغيير',
 
     // services
     'clothing_cleaning' => [

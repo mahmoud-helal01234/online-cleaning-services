@@ -1,21 +1,20 @@
-<!-- Styles -->
+<!-- Scripts and Styles -->
 <link rel="stylesheet" href="{{ asset('css/cart.css') }}">
 
 <!-- Shopping Cart Modal -->
 <div class="modal fade" id="cart-modal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
-        <div class="modal-content shadow-lg rounded-4">
-            <div class="modal-header bg-dark text-white">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h5 class="modal-title">@lang('page.shopping_cart')</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="@lang('page.close')"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@lang('page.close')"></button>
             </div>
 
-            <div class="modal-body p-4" >
-                <div class="card border-0 shadow-sm rounded-4">
+            <div class="modal-body">
+                <div class="card">
                     <div class="card-body text-center">
-                        <!-- Cart Options -->
-                        <div id="cart-options" class="cart-options mb-4">
-                            <!-- Dynamic cart options will be injected here -->
+                    <div class="cart-options mb-4" id="cart-options">
+                            <!-- Dynamic cart options can be injected here -->
                         </div>
 
                         <!-- Promo Code Section -->
@@ -24,50 +23,53 @@
                             <div class="col-sm-5">
                                 <input class="form-control" type="text" placeholder="@lang('page.enter_promo_code')" id="promo-code">
                             </div>
-                            <div class="col-sm-3 d-flex">
-                                <button type="button" id="apply-promo-btn" class="btn btn-primary flex-grow-1 me-2" onclick="applyPromoCode()">@lang('page.apply')</button>
-                                <button type="button" class="btn btn-secondary flex-grow-1 d-none" id="change-promo-btn" onclick="resetPromoCode()">@lang('page.change')</button>
+                            <div class="col-sm-3">
+                                <button type="button" id="apply-promo-btn" class="btn btn-primary w-100" onclick="applyPromoCode()">@lang('page.apply')</button>
+                                <button type="button" class="btn btn-secondary w-100 d-none" id="change-promo-btn" onclick="resetPromoCode()">@lang('page.change')</button>
+
                             </div>
+                            
                         </div>
                         <p id="promo-message" class="text-success mt-2" style="display: none;">@lang('page.discount_applied_successfully')</p>
 
-                        <!-- Pricing Details -->
-                        <div  class="text-start mb-4 text-center">
-                            <p class="fw-bold mb-2">@lang('page.pre_total'): <span id="pre-total">0.00</span> AED</p>
-                            <p class="fw-bold mb-2">@lang('page.discount'): <span id="discount">0.00</span> AED <span id="discount-value"></span></p>
-                            <p class="fw-bold text-primary">@lang('page.total_price'): <span id="total-price">0.00</span> AED</p>
-                        </div>
+                        <!-- Discounted Price Display -->
+                        <p class="mb-2 fw-bold">@lang('page.pre_total'): <span id="pre-total"></span> AED</p>
+
+                        <p class="mb-2 fw-bold">@lang('page.discount'): <span id="discount"></span> AED <span id="discount-value"></span></p>
+
+                        <!-- Total Price Display -->
+                        <p class="mb-0 fw-bold">@lang('page.total_price'): <span id="total-price"></span> AED</p>
 
                         <!-- Cart Details Form -->
                         <form class="mt-4">
                             <div class="row mb-3">
                                 <label for="name" class="col-sm-4 col-form-label">@lang('page.name')</label>
                                 <div class="col-sm-8">
-                                    <input class="form-control" type="text" name="name" placeholder="@lang('page.enter_name')" id="name" required>
+                                    <input class="form-control" type="text" placeholder="@lang('page.enter_name')" name="name" required>
                                 </div>
                             </div>
 
                             <div class="row mb-3">
                                 <label for="phone" class="col-sm-4 col-form-label">@lang('page.phone_number')</label>
                                 <div class="col-sm-8">
-                                    <input class="form-control" type="text" placeholder="@lang('page.enter_phone')" id="phone" name="phoneNumber" required>
+                                    <input class="form-control" type="text" placeholder="@lang('page.enter_phone')" name="phoneNumber" required>
                                 </div>
                             </div>
 
                             <div class="row mb-3">
                                 <label for="address" class="col-sm-4 col-form-label">@lang('page.address')</label>
                                 <div class="col-sm-8">
-                                    <input class="form-control" type="text" placeholder="@lang('page.enter_address')" id="address" name="address" required>
+                                    <input class="form-control" type="text" placeholder="@lang('page.enter_address')" name="address" required>
                                 </div>
                             </div>
 
                             <div class="row mb-3">
                                 <label for="pickup-time" class="col-sm-4 col-form-label">@lang('page.preferred_pickup_time')</label>
                                 <div class="col-sm-4">
-                                    <input class="form-control" type="date" id="date" name="date" required>
+                                    <input class="form-control" type="date" name="date" required>
                                 </div>
                                 <div class="col-sm-4">
-                                    <input class="form-control" type="time" id="time" name="time" required>
+                                    <input class="form-control" type="time" name="time" required>
                                 </div>
                             </div>
                         </form>
@@ -87,10 +89,12 @@
 <!-- Order Confirmation Modal -->
 <div class="modal fade" id="orderConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="orderConfirmationModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content shadow-lg rounded-4">
-            <div class="modal-header bg-dark text-white">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h5 class="modal-title">@lang('page.order_confirmation')</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="@lang('page.close')"></button>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="@lang('page.close')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body text-center">
                 <p>@lang('page.thank_you_for_your_order') <strong id="customerName"></strong>!</p>
@@ -103,5 +107,5 @@
     </div>
 </div>
 
-<!-- Scripts -->
+
 <script src="js/cart.js"></script>

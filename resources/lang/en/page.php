@@ -20,6 +20,16 @@ return [
 
     'order_details' => 'Order details',
     'appreciation_to_order' => 'We appreciate your business and look forward to serving you again!',
+    'discounted_price' => 'Discounted Price',
+    'apply' => 'Apply',
+    'promo_code' => 'Promo Code',
+    'enter_promo_code' => 'Enter Promo Code',
+    'invalid_promo_code' => 'Invalid Promo Code',
+    'discount_applied_successfully' => 'Discount applied successfully',
+    'discount' => 'Discount',
+    'pre_total' => 'Pre Total',
+
+    'change' => 'Change',
 
         // services
         'clothing_cleaning' => [

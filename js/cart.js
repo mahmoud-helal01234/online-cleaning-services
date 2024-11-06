@@ -142,7 +142,7 @@ function applyPromoCode() {
             if (response.ok) {
                 return response.json();
             } else {
-                alert(trans("Invalid Promo Code","كود خصم غير صحيح"));
+                throw new Error( trans("Invalid Promo Code","كود خصم غير صحيح"));
             }
         })
         .then(data => {
