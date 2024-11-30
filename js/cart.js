@@ -3,12 +3,24 @@ let promoCode = null;
 let preTotalPrice = 0;
 let totalPrice = 0;
 
-function trans(english = null, arabic = null){
+function trans(english = null, arabic = null) {
     return lang == 'en' ? english : arabic;
 }
 
+// Declare the ordering flag outside the function
+let ordering = false;
+
 function submitOrder() {
-    // Determine language preference
+
+    // Check if the function is already running
+    if (ordering) {
+        // Optionally, alert the user
+        alert(translate('Your order is being processed. Please wait.', 'يتم معالجة طلبك. الرجاء الانتظار.'));
+        return;
+    }
+
+    // Set the flag to true to indicate the function is running
+    ordering = true;
 
     // Helper function to get translated text
     const translate = (enText, arText) => lang === 'en' ? enText : arText;
@@ -18,15 +30,16 @@ function submitOrder() {
     document.querySelectorAll('.product-option').forEach(product => {
         const id = product.id.split('-')[2];
         const quantity = parseInt(product.querySelector('.quantity').textContent);
-        const total = parseFloat(product.querySelector('.total-price').textContent.replace('AED', ''));
 
         cartData.push({
             id: id,
             quantity: quantity,
         });
     });
+
     if (cartData.length === 0) {
         alert(translate('Your cart is empty. Please add products before submitting your order.', 'سلة التسوق فارغة. يرجى إضافة منتجات قبل تقديم الطلب.'));
+        ordering = false; // Reset the flag
         return;
     }
 
@@ -37,30 +50,36 @@ function submitOrder() {
     const date = document.querySelector('input[name="date"]').value;
     const time = document.querySelector('input[name="time"]').value;
     const promoCodeId = promoCode != null ? promoCode.id : null;
+
     // Validation checks
     if (name === "") {
         alert(translate('Please enter your name.', 'يرجى إدخال اسمك.'));
+        ordering = false; // Reset the flag
         return;
     }
 
     const phoneRegex = /^[0-9]+$/;
     if (phone === "" || !phoneRegex.test(phone)) {
         alert(translate('Please enter a valid phone number.', 'يرجى إدخال رقم هاتف صحيح.'));
+        ordering = false; // Reset the flag
         return;
     }
 
     if (address === "") {
         alert(translate('Please enter your address.', 'يرجى إدخال عنوانك.'));
+        ordering = false; // Reset the flag
         return;
     }
 
     if (date === "") {
         alert(translate('Please select a date.', 'يرجى اختيار تاريخ.'));
+        ordering = false; // Reset the flag
         return;
     }
 
     if (time === "") {
         alert(translate('Please select a preferred pickup time.', 'يرجى اختيار وقت استلام مفضل.'));
+        ordering = false; // Reset the flag
         return;
     }
 
@@ -86,8 +105,9 @@ function submitOrder() {
         },
         body: JSON.stringify(orderData),
     })
-        .then(response => {
-            if (response.ok) {
+    .then(response => {
+        if (response.ok) {
+            return response.json().then(data => {
                 const orderDetailsList = document.getElementById('orderDetails');
                 orderDetailsList.innerHTML = `
                     <li><strong>${translate('Phone:', 'الهاتف:')}</strong> ${phone}</li>
@@ -96,29 +116,32 @@ function submitOrder() {
 
                 $('#cart-modal').modal('hide');
                 $('#orderConfirmationModal').modal('show');
+                cartOptions.clear();
+                resetPromoCode();
+                promoCode = null;
 
-                return response.json();
-            }
+                localStorage.removeItem('cartOptions');
+                localStorage.removeItem('promoCode');
+
+                console.log(translate('Order submitted successfully!', 'تم تقديم الطلب بنجاح!'));
+
+                // Redirect after a delay
+                setTimeout(function () {
+                    window.location.href = '/';
+                    ordering = false; // Reset the flag after redirection
+                }, 6000);
+            });
+        } else {
+            ordering = false; // Reset the flag on failure
             throw new Error(translate('Failed to submit the order', 'فشل في تقديم الطلب'));
-        })
-        .then(data => {
-            cartOptions.clear();
-            resetPromoCode();
-            promoCode = null;
-
-            localStorage.removeItem('cartOptions');
-            localStorage.removeItem('promoCode');
-            setTimeout(function () {
-                window.location.href = '/';
-            }, 6000);
-
-            console.log(translate('Order submitted successfully!', 'تم تقديم الطلب بنجاح!'));
-            console.log('Success:', data);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+        }
+    })
+    .catch(error => {
+        ordering = false; // Reset the flag on error
+        console.error('Error:', error);
+    });
 }
+
 
 function applyPromoCode() {
     // Get elements
@@ -142,7 +165,7 @@ function applyPromoCode() {
             if (response.ok) {
                 return response.json();
             } else {
-                throw new Error( trans("Invalid Promo Code","كود خصم غير صحيح"));
+                throw new Error(trans("Invalid Promo Code", "كود خصم غير صحيح"));
             }
         })
         .then(data => {
@@ -151,7 +174,7 @@ function applyPromoCode() {
                 promoCode = data.data;
                 fillPromoCodeUI();
             } else {
-                alert(trans("Invalid Promo Code","كود خصم غير صحيح"));
+                alert(trans("Invalid Promo Code", "كود خصم غير صحيح"));
             }
         });
 }
@@ -172,7 +195,7 @@ function fillPromoCodeUI() {
     const discountValue = promoCode.value;
     let discountPrice = 0;
     let discountedPrice;
-    
+
     if (discountType === "percentage") {
 
         discountPrice = (preTotalPrice * (discountValue / 100));
@@ -187,7 +210,7 @@ function fillPromoCodeUI() {
     discountedPrice = Math.max(discountedPrice, 0); // Ensure price doesn't go below zero
 
     document.getElementById("pre-total").innerText = preTotalPrice.toFixed(2);
-    
+
     document.getElementById("discount").style.display = "inline";
 
     document.getElementById("discount").innerText = discountPrice.toFixed(2);
@@ -206,7 +229,7 @@ function fillPromoCodeUI() {
 
     // Show success message
     promoMessage.style.display = "block";
-    promoMessage.innerText = trans("Promo Code Applied","تم تطبيق الخصم");
+    promoMessage.innerText = trans("Promo Code Applied", "تم تطبيق الخصم");
 }
 
 function resetPromoCode() {
@@ -233,7 +256,7 @@ function resetPromoCode() {
     console.log(localStorage.getItem('promoCode'));
 
     document.getElementById("total-price").innerText = document.getElementById("pre-total").innerText;
-    
+
     document.getElementById("discount").style.display = "none";
     ;
 
@@ -251,7 +274,7 @@ function saveCartOptionsInLocalStorage() {
     localStorage.setItem('cartOptions', JSON.stringify(cartOptionsArray));
 }
 
-function loadCartDataFromLocalStorage(){
+function loadCartDataFromLocalStorage() {
     getCartOptionsFromLocalStorage();
     getPromoCodeFromLocalStorage();
     fillCartUIByData();
@@ -270,10 +293,10 @@ function getCartOptionsFromLocalStorage() {
         cartOptions = new Map(); // Initialize to an empty Map if nothing in localStorage
     }
 
-    
+
 }
 
-function getPromoCodeFromLocalStorage(){
+function getPromoCodeFromLocalStorage() {
     const storedPromoCode = localStorage.getItem('promoCode');
 
     if (storedPromoCode) {
@@ -303,7 +326,7 @@ function addToCart() {
 
 }
 
-function fillCartOptions(){
+function fillCartOptions() {
     let cartOptionsElements = "";
     if (cartOptions == null)
         return;
@@ -374,12 +397,12 @@ function decreaseCartOptionQuantity(cartOptionId) {
 
     if (cartOption.quantity == 1) {
         cartOptions.delete(cartOptionId);
-    }else{
+    } else {
         cartOption.quantity--;
 
     }
 
-    
+
     fillCartUIByData();
     saveCartOptionsInLocalStorage();
 }

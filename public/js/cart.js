@@ -7,8 +7,19 @@ function trans(english = null, arabic = null){
     return lang == 'en' ? english : arabic;
 }
 
+let ordering = false;
+
 function submitOrder() {
-    // Determine language preference
+
+    // Check if the function is already running
+    if (ordering) {
+        // Optionally, alert the user
+        alert(translate('Your order is being processed. Please wait.', 'يتم معالجة طلبك. الرجاء الانتظار.'));
+        return;
+    }
+
+    // Set the flag to true to indicate the function is running
+    ordering = true;
 
     // Helper function to get translated text
     const translate = (enText, arText) => lang === 'en' ? enText : arText;
@@ -18,15 +29,16 @@ function submitOrder() {
     document.querySelectorAll('.product-option').forEach(product => {
         const id = product.id.split('-')[2];
         const quantity = parseInt(product.querySelector('.quantity').textContent);
-        const total = parseFloat(product.querySelector('.total-price').textContent.replace('AED', ''));
 
         cartData.push({
             id: id,
             quantity: quantity,
         });
     });
+
     if (cartData.length === 0) {
         alert(translate('Your cart is empty. Please add products before submitting your order.', 'سلة التسوق فارغة. يرجى إضافة منتجات قبل تقديم الطلب.'));
+        ordering = false; // Reset the flag
         return;
     }
 
@@ -37,30 +49,36 @@ function submitOrder() {
     const date = document.querySelector('input[name="date"]').value;
     const time = document.querySelector('input[name="time"]').value;
     const promoCodeId = promoCode != null ? promoCode.id : null;
+
     // Validation checks
     if (name === "") {
         alert(translate('Please enter your name.', 'يرجى إدخال اسمك.'));
+        ordering = false; // Reset the flag
         return;
     }
 
     const phoneRegex = /^[0-9]+$/;
     if (phone === "" || !phoneRegex.test(phone)) {
         alert(translate('Please enter a valid phone number.', 'يرجى إدخال رقم هاتف صحيح.'));
+        ordering = false; // Reset the flag
         return;
     }
 
     if (address === "") {
         alert(translate('Please enter your address.', 'يرجى إدخال عنوانك.'));
+        ordering = false; // Reset the flag
         return;
     }
 
     if (date === "") {
         alert(translate('Please select a date.', 'يرجى اختيار تاريخ.'));
+        ordering = false; // Reset the flag
         return;
     }
 
     if (time === "") {
         alert(translate('Please select a preferred pickup time.', 'يرجى اختيار وقت استلام مفضل.'));
+        ordering = false; // Reset the flag
         return;
     }
 
@@ -86,8 +104,9 @@ function submitOrder() {
         },
         body: JSON.stringify(orderData),
     })
-        .then(response => {
-            if (response.ok) {
+    .then(response => {
+        if (response.ok) {
+            return response.json().then(data => {
                 const orderDetailsList = document.getElementById('orderDetails');
                 orderDetailsList.innerHTML = `
                     <li><strong>${translate('Phone:', 'الهاتف:')}</strong> ${phone}</li>
@@ -96,28 +115,30 @@ function submitOrder() {
 
                 $('#cart-modal').modal('hide');
                 $('#orderConfirmationModal').modal('show');
+                cartOptions.clear();
+                resetPromoCode();
+                promoCode = null;
 
-                return response.json();
-            }
+                localStorage.removeItem('cartOptions');
+                localStorage.removeItem('promoCode');
+
+                console.log(translate('Order submitted successfully!', 'تم تقديم الطلب بنجاح!'));
+
+                // Redirect after a delay
+                setTimeout(function () {
+                    window.location.href = '/';
+                    ordering = false; // Reset the flag after redirection
+                }, 6000);
+            });
+        } else {
+            ordering = false; // Reset the flag on failure
             throw new Error(translate('Failed to submit the order', 'فشل في تقديم الطلب'));
-        })
-        .then(data => {
-            cartOptions.clear();
-            resetPromoCode();
-            promoCode = null;
-
-            localStorage.removeItem('cartOptions');
-            localStorage.removeItem('promoCode');
-            setTimeout(function () {
-                window.location.href = '/';
-            }, 6000);
-
-            console.log(translate('Order submitted successfully!', 'تم تقديم الطلب بنجاح!'));
-            console.log('Success:', data);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+        }
+    })
+    .catch(error => {
+        ordering = false; // Reset the flag on error
+        console.error('Error:', error);
+    });
 }
 
 function applyPromoCode() {

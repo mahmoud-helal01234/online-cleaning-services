@@ -104,4 +104,4 @@
 </div>
 
 <!-- Scripts -->
-<script src="js/cart.js"></script>
+<script src="js/cart.js?v=1.0.0"></script>
