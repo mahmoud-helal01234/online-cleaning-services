@@ -138,6 +138,11 @@ class ComposerStaticInitd8acb7b917e433755244c41079ff0f1f
             'Laravel\\Sanctum\\' => 16,
             'Laravel\\Sail\\' => 13,
         ),
+        'J' => 
+        array (
+            'Jenssegers\\Agent\\' => 17,
+            'Jaybizzle\\CrawlerDetect\\' => 24,
+        ),
         'I' => 
         array (
             'Illuminate\\Support\\' => 19,
@@ -472,6 +477,14 @@ class ComposerStaticInitd8acb7b917e433755244c41079ff0f1f
         array (
             0 => __DIR__ . '/..' . '/laravel/sail/src',
         ),
+        'Jenssegers\\Agent\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/jenssegers/agent/src',
+        ),
+        'Jaybizzle\\CrawlerDetect\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/jaybizzle/crawler-detect/src',
+        ),
         'Illuminate\\Support\\' => 
         array (
             0 => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Macroable',
@@ -567,6 +580,16 @@ class ComposerStaticInitd8acb7b917e433755244c41079ff0f1f
         ),
     );
 
+    public static $prefixesPsr0 = array (
+        'D' => 
+        array (
+            'Detection' => 
+            array (
+                0 => __DIR__ . '/..' . '/mobiledetect/mobiledetectlib/namespaced',
+            ),
+        ),
+    );
+
     public static $classMap = array (
         'App\\Console\\Commands\\DeleteLocationsDaily' => __DIR__ . '/../..' . '/app/Console/Commands/DeleteLocationsDaily.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
@@ -649,6 +672,7 @@ class ComposerStaticInitd8acb7b917e433755244c41079ff0f1f
         'App\\Http\\Middleware\\AuthenticateClient' => __DIR__ . '/../..' . '/app/Http/Middleware/AuthenticateClient.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
         'App\\Http\\Middleware\\IsAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/IsAuthenticated.php',
+        'App\\Http\\Middleware\\LogSiteVisit' => __DIR__ . '/../..' . '/app/Http/Middleware/LogSiteVisit.php',
         'App\\Http\\Middleware\\PreventRequestsDuringMaintenance' => __DIR__ . '/../..' . '/app/Http/Middleware/PreventRequestsDuringMaintenance.php',
         'App\\Http\\Middleware\\RedirectIfAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/RedirectIfAuthenticated.php',
         'App\\Http\\Middleware\\SetLanguage' => __DIR__ . '/../..' . '/app/Http/Middleware/SetLanguage.php',
@@ -876,6 +900,7 @@ class ComposerStaticInitd8acb7b917e433755244c41079ff0f1f
         'App\\Http\\Traits\\NotificationTrait' => __DIR__ . '/../..' . '/app/Http/Traits/NotificationTrait.php',
         'App\\Http\\Traits\\NotificationsTrait' => __DIR__ . '/../..' . '/app/Http/Traits/NotificationsTrait.php',
         'App\\Http\\Traits\\ResponsesTrait' => __DIR__ . '/../..' . '/app/Http/Traits/ResponsesTrait.php',
+        'App\\Jobs\\ProcessSiteVisitJob' => __DIR__ . '/../..' . '/app/Jobs/ProcessSiteVisitJob.php',
         'App\\Listeners\\DeleteDeviceToken' => __DIR__ . '/../..' . '/app/Listeners/DeleteDeviceToken.php',
         'App\\Mail\\ForgetPasswordMail' => __DIR__ . '/../..' . '/app/Mail/ForgetPasswordMail.php',
         'App\\Mail\\ResetPasswordTokenEmail' => __DIR__ . '/../..' . '/app/Mail/ResetPasswordTokenEmail.php',
@@ -943,6 +968,7 @@ class ComposerStaticInitd8acb7b917e433755244c41079ff0f1f
         'App\\Models\\PromoCodeOffer' => __DIR__ . '/../..' . '/app/Models/PromoCodeOffer.php',
         'App\\Models\\Rule' => __DIR__ . '/../..' . '/app/Models/Rule.php',
         'App\\Models\\Setting' => __DIR__ . '/../..' . '/app/Models/Setting.php',
+        'App\\Models\\SiteVisit' => __DIR__ . '/../..' . '/app/Models/SiteVisit.php',
         'App\\Models\\SliderOffer' => __DIR__ . '/../..' . '/app/Models/SliderOffer.php',
         'App\\Models\\SocialLink' => __DIR__ . '/../..' . '/app/Models/SocialLink.php',
         'App\\Models\\StatisticsTag' => __DIR__ . '/../..' . '/app/Models/StatisticsTag.php',
@@ -1112,6 +1138,7 @@ class ComposerStaticInitd8acb7b917e433755244c41079ff0f1f
         'DeepCopy\\TypeFilter\\Spl\\SplDoublyLinkedListFilter' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/TypeFilter/Spl/SplDoublyLinkedListFilter.php',
         'DeepCopy\\TypeFilter\\TypeFilter' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/TypeFilter/TypeFilter.php',
         'DeepCopy\\TypeMatcher\\TypeMatcher' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/TypeMatcher/TypeMatcher.php',
+        'Detection\\MobileDetect' => __DIR__ . '/..' . '/mobiledetect/mobiledetectlib/namespaced/Detection/MobileDetect.php',
         'Dflydev\\DotAccessData\\Data' => __DIR__ . '/..' . '/dflydev/dot-access-data/src/Data.php',
         'Dflydev\\DotAccessData\\DataInterface' => __DIR__ . '/..' . '/dflydev/dot-access-data/src/DataInterface.php',
         'Dflydev\\DotAccessData\\Exception\\DataException' => __DIR__ . '/..' . '/dflydev/dot-access-data/src/Exception/DataException.php',
@@ -3120,6 +3147,14 @@ class ComposerStaticInitd8acb7b917e433755244c41079ff0f1f
         'Illuminate\\View\\ViewFinderInterface' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/View/ViewFinderInterface.php',
         'Illuminate\\View\\ViewName' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/View/ViewName.php',
         'Illuminate\\View\\ViewServiceProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/View/ViewServiceProvider.php',
+        'Jaybizzle\\CrawlerDetect\\CrawlerDetect' => __DIR__ . '/..' . '/jaybizzle/crawler-detect/src/CrawlerDetect.php',
+        'Jaybizzle\\CrawlerDetect\\Fixtures\\AbstractProvider' => __DIR__ . '/..' . '/jaybizzle/crawler-detect/src/Fixtures/AbstractProvider.php',
+        'Jaybizzle\\CrawlerDetect\\Fixtures\\Crawlers' => __DIR__ . '/..' . '/jaybizzle/crawler-detect/src/Fixtures/Crawlers.php',
+        'Jaybizzle\\CrawlerDetect\\Fixtures\\Exclusions' => __DIR__ . '/..' . '/jaybizzle/crawler-detect/src/Fixtures/Exclusions.php',
+        'Jaybizzle\\CrawlerDetect\\Fixtures\\Headers' => __DIR__ . '/..' . '/jaybizzle/crawler-detect/src/Fixtures/Headers.php',
+        'Jenssegers\\Agent\\Agent' => __DIR__ . '/..' . '/jenssegers/agent/src/Agent.php',
+        'Jenssegers\\Agent\\AgentServiceProvider' => __DIR__ . '/..' . '/jenssegers/agent/src/AgentServiceProvider.php',
+        'Jenssegers\\Agent\\Facades\\Agent' => __DIR__ . '/..' . '/jenssegers/agent/src/Facades/Agent.php',
         'Laravel\\Sail\\Console\\AddCommand' => __DIR__ . '/..' . '/laravel/sail/src/Console/AddCommand.php',
         'Laravel\\Sail\\Console\\Concerns\\InteractsWithDockerComposeServices' => __DIR__ . '/..' . '/laravel/sail/src/Console/Concerns/InteractsWithDockerComposeServices.php',
         'Laravel\\Sail\\Console\\InstallCommand' => __DIR__ . '/..' . '/laravel/sail/src/Console/InstallCommand.php',
@@ -3702,6 +3737,7 @@ class ComposerStaticInitd8acb7b917e433755244c41079ff0f1f
         'League\\OAuth1\\Client\\Signature\\RsaSha1Signature' => __DIR__ . '/..' . '/league/oauth1-client/src/Signature/RsaSha1Signature.php',
         'League\\OAuth1\\Client\\Signature\\Signature' => __DIR__ . '/..' . '/league/oauth1-client/src/Signature/Signature.php',
         'League\\OAuth1\\Client\\Signature\\SignatureInterface' => __DIR__ . '/..' . '/league/oauth1-client/src/Signature/SignatureInterface.php',
+        'Mobile_Detect' => __DIR__ . '/..' . '/mobiledetect/mobiledetectlib/Mobile_Detect.php',
         'Mockery\\Adapter\\Phpunit\\MockeryPHPUnitIntegration' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/MockeryPHPUnitIntegration.php',
         'Mockery\\Adapter\\Phpunit\\MockeryPHPUnitIntegrationAssertPostConditions' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/MockeryPHPUnitIntegrationAssertPostConditions.php',
         'Mockery\\Adapter\\Phpunit\\MockeryTestCase' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/MockeryTestCase.php',
@@ -6522,6 +6558,7 @@ class ComposerStaticInitd8acb7b917e433755244c41079ff0f1f
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInitd8acb7b917e433755244c41079ff0f1f::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitd8acb7b917e433755244c41079ff0f1f::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitd8acb7b917e433755244c41079ff0f1f::$prefixesPsr0;
             $loader->classMap = ComposerStaticInitd8acb7b917e433755244c41079ff0f1f::$classMap;
 
         }, null, ClassLoader::class);
