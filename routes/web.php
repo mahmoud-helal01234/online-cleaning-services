@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['middleware' => [], 'namespace' => 'App\Http\Controllers'], function () {
+    
     Route::get('/', 'WebsitePagesController@homePage');
 
 });
