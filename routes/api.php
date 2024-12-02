@@ -163,7 +163,10 @@ Route::group(['middleware' => ['api'], 'namespace' => 'App\Http\Controllers'], f
     });
 
     Route::group(['namespace' => 'Orders'], function () {
+        
         Route::post('order/client', 'OrdersController@createForClient');
+
+        Route::get('region', 'RegionsController@get');
 
         Route::group(['middleware' => ['authenticate:client']], function () {
 
