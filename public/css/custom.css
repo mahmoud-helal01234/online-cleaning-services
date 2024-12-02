@@ -38,7 +38,7 @@ html {
 
     position: sticky;
     top: 0;
-    overflow: hidden;
+    /* overflow: hidden; */
     z-index: 1000;
 
 }
