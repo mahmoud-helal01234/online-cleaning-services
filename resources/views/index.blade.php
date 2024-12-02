@@ -260,7 +260,7 @@
             </div>
         </div>
         <!-- Contact us section -->
-        <div id="contact-us" class="content-container bg-white"
+        <!-- <div id="contact-us" class="content-container bg-white"
             style="padding: 0;margin: 0;">
             <iframe
                 id="map"
@@ -290,7 +290,7 @@
                     @lang('page.working_hours')</h4>
 
             </div>
-        </div>
+        </div> -->
     </section>
 
     <!-- Remove the container if you want to extend the Footer to full width. -->
@@ -331,12 +331,12 @@
                     <h5 class="text-uppercase mb-4">@lang('page.contacts')</h5>
 
                     <ul class="fa-ul" style="margin-left: 1.65em;">
-                        <li class="mb-3">
+                        <!-- <li class="mb-3">
                         <a href="https://maps.app.goo.gl/6G7vtwaT49Ta2kNQ7" target="_blank" style="text-decoration: none;">
 
                             <span class="fa-li"><i class="fas fa-home"></i></span><span class="ms-2">@lang('page.laundry_address')</span>
                         </a>
-                        </li>
+                        </li> -->
                         <li class="mb-3">
                         <a href="mailto:support@aquacare-laundry.com" target="_blank" style="text-decoration: none;">
 
