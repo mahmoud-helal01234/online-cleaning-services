@@ -47,6 +47,8 @@ return [
         
     'shop_homepage' => 'AquaCare Laundry',
     'aquacare_laundry' => 'AquaCare Laundry',
+    'choose_region' => 'Choose region',
+
     'slider1_header' => 'Fresh, Clean, Delivered',
     "slider1_body" => "Enjoy fresh, professionally cleaned clothes without leaving your home. Schedule a pick-up and delivery service that fits your busy life. Your laundry, your way!",
     'categories' => 'Categories',

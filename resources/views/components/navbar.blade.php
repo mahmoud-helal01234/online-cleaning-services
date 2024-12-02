@@ -19,7 +19,7 @@ $regions = Region::all(); // Fetch all regions
                 <li class="nav-item"><a class="nav-link" href="https://wa.me/+971506689921"><i class="fa-brands fa-whatsapp" style="color:rgb(9, 217,9)"></i> <span dir="ltr">+971 506 689 921</span></a></li>
                 <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="regionsDropdown" role="button" data-bs-toggle="dropdown">
-                            @lang('page.regions')
+                            @lang('page.choose_region')
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="regionsDropdown" style="z-index: 10503232;">
                             @foreach($regions as $region)
