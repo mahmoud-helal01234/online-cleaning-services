@@ -6,6 +6,7 @@ use Exception;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Driver;
+use App\Models\Setting;
 use App\Models\EasyOrder;
 use App\Models\OrderItem;
 use App\Models\PromoCode;
@@ -14,9 +15,11 @@ use App\Models\Notification;
 use App\Models\OrderComment;
 use App\Models\ProductOption;
 use App\Models\ClientLocation;
+use App\Mail\NewOrderNotification;
 use Illuminate\Support\Facades\DB;
 use App\Http\Traits\ResponsesTrait;
 use App\Http\Traits\ArraySliceTrait;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Traits\LoggedInUserTrait;
 use App\Http\Traits\NotificationTrait;
 use App\Models\OrderHaveBaseOrdersRate;
@@ -25,7 +28,6 @@ use App\Http\Services\Orders\ClientOrdersService;
 use App\Models\TransportationPeriodAssignedToDriver;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Http\Services\DriversApp\DriversAppOrdersService;
-use App\Models\Setting;
 
 class OrdersService
 {
@@ -37,6 +39,8 @@ class OrdersService
 
     public function createForClient($order)
     {
+
+
         // dd($order);
         $loggedInUser = $this->getLoggedInUser();
         if ($loggedInUser != null) {
@@ -64,11 +68,11 @@ class OrdersService
 
             $price +=  $productOption['price'] * $orderItem['quantity'];
         }
-
+        $discountValue = 0;
         // apply discount 
         if (isset($order['promo_code_id'])) {
             $promoCode = PromoCode::where('id', $order['promo_code_id'])->first();
-            $discountValue = 0;
+            // $discountValue = 0;
 
             if ($promoCode->discount_type == 'percentage') {
                 $discountValue = $price * $promoCode->value / 100;
@@ -80,13 +84,15 @@ class OrdersService
 
             $price -= $discountValue;
         }
+        
         $minOrderPrice = Setting::first()->min_order_price;
 
         $price = $price < $minOrderPrice ? $minOrderPrice : $price;
 
         $order['price'] = $price;
 
-        DB::transaction(function () use ($order, $productOptions, $loggedInUser) {
+        DB::transaction(function () use ($order, $productOptions, $loggedInUser,$discountValue) {
+            $itemsForEmail = [];
 
             if ($loggedInUser != null) {
                 $createdOrder = Order::create($this->array_slice_assoc($order, [
@@ -122,6 +128,14 @@ class OrdersService
                     'price' => $productOption->price,
                     'quantity' => $orderItem['quantity']
                 ]);
+
+                $itemsForEmail[] = [
+                    'name_en' => $productOption->product->name_en . ' - ' . $productOption->name_en,
+                    'name_ar' => $productOption->product->name_ar . ' - ' . $productOption->name_ar,
+                    'price' => $productOption->price,
+                    'quantity' => $orderItem['quantity'],
+                ];
+        
                 // $totalPrice += $productOption->price * $orderItem['quantity'];
             }
 
@@ -171,6 +185,8 @@ class OrdersService
 
                 // $this->sendNotification($data_send = $notification, $subscribers);
             }
+            Mail::to(env('NOTIFICATION_EMAIL','aquacarelaundry@gmail.com'))->send(new NewOrderNotification($createdOrder, $itemsForEmail,$discountValue));
+
         });
 
 

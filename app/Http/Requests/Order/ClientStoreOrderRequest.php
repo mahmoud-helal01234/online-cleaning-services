@@ -35,7 +35,7 @@ class ClientStoreOrderRequest extends FormRequest
             'client_name' => 'required|string|max:50',
             'phone' => 'required|string|max:15',
             'address' => 'required|string|max:500',
-            'promo_code_id' => 'sometimes|exists:promo_codes,id,active,1',
+            'promo_code_id' => 'sometimes|nullable|exists:promo_codes,id,active,1',
 
             'preferred_pickup_time' => 'required|date_format:Y-m-d H:i',
             'items' => 'required|array',
