@@ -14,7 +14,7 @@ use App\Http\Controllers\InvoiceController;
 |
 */
 
-Route::group(['middleware' => [], 'namespace' => 'App\Http\Controllers'], function () {
+Route::group(['middleware' => ['language'], 'namespace' => 'App\Http\Controllers'], function () {
     
     Route::get('/', 'WebsitePagesController@homePage');
     Route::get('/create-invoice', [InvoiceController::class, 'create'])->name('invoice.create');

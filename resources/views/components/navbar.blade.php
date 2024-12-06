@@ -31,11 +31,11 @@ $regions = Region::all(); // Fetch all regions
                       <!-- Language Switcher -->
                       <div class="btn-group ms-2">
                 @if (app()->getLocale() == 'en')
-                    <a href="{{ url('lang/ar') }}" class="btn btn-outline-light" style="border-radius: 20px; padding: 0.5rem 1rem;">
+                    <a href="{{ url('?lang=ar') }}" class="btn btn-outline-light" style="border-radius: 20px; padding: 0.5rem 1rem;">
                         <i class="fa fa-language" ></i> اللغة العربية
                     </a>
                 @else
-                    <a href="{{ url('lang/en') }}" class="btn btn-outline-light" style="border-radius: 20px; padding: 0.5rem 1rem;">
+                    <a href="{{ url('?lang=en') }}" class="btn btn-outline-light" style="border-radius: 20px; padding: 0.5rem 1rem;">
                     <i class="fa fa-language" ></i> English
                     </a>
                 @endif

@@ -39,6 +39,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\SetLanguage::class,
             \App\Http\Middleware\LogSiteVisit::class,
+            \App\Http\Middleware\LanguageMiddleware::class,
 
         ],
 
@@ -76,6 +77,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\IsAuthenticated::class,
         'authenticate-client'=>
         \App\Http\Middleware\AuthenticateClient::class,
+        'language' => \App\Http\Middleware\LanguageMiddleware::class,
 
     ];
 }
