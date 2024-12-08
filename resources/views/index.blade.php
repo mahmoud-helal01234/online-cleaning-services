@@ -24,9 +24,34 @@
         const categories = <?php echo json_encode($categories); ?>;
     </script>
 
+    <!-- Google Tag Manager -->
+    <script>
+        (function(w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({
+                'gtm.start': new Date().getTime(),
+                event: 'gtm.js'
+            });
+            var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s),
+                dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src =
+                'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-TM9487VV');
+    </script>
+    <!-- End Google Tag Manager -->
+
 </head>
 
 <body>
+
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TM9487VV"
+            height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <!-- Navigation-->
     <x-navbar />
     <x-cart />
@@ -86,8 +111,8 @@
                     </div>
                 </div>
             </div>
-            
-                
+
+
         </div>
 
         <div class="carousel-control">
@@ -240,7 +265,7 @@
     <!-- Section-->
     <section class="py-5 bg-white" id="categories-section">
         <div class="container px-4 px-lg-5 mt-5">
-        <h2 class="text-center mb-4">@lang('page.categories')</h2>
+            <h2 class="text-center mb-4">@lang('page.categories')</h2>
 
             <div class="btn-toolbar btn-toolbar-categories" role="toolbar"
                 aria-label="Toolbar with button groups">
@@ -313,14 +338,14 @@
                         <a href="tel:+971506689921" type="button" class="btn btn-floating btn-primary btn-lg"><i class="fa fa-phone"></i></a>
                         <a href="https://wa.me/+971506689921" type="button" class="btn btn-floating btn-primary btn-lg"><i class="fab fa-brands fa-whatsapp"></i></a>
 
-                    <!-- Facebook -->
+                        <!-- Facebook -->
                         <!-- <a type="button" class="btn btn-floating btn-primary btn-lg"><i class="fab fa-facebook-f"></i></a> -->
                         <!-- Dribbble -->
                         <!-- <a type="button" class="btn btn-floating btn-primary btn-lg"><i class="fab fa-dribbble"></i></a> -->
                         <!-- Twitter -->
                         <!-- <a type="button" class="btn btn-floating btn-primary btn-lg"><i class="fab fa-twitter"></i></a> -->
                         <!-- Google + -->
-                        <a href="mailto:support@aquacare-laundry.com"type="button" class="btn btn-floating btn-primary btn-lg"><i class="fa fa-envelope"></i></a>
+                        <a href="mailto:support@aquacare-laundry.com" type="button" class="btn btn-floating btn-primary btn-lg"><i class="fa fa-envelope"></i></a>
                         <!-- Linkedin -->
                     </div>
                 </div>
@@ -338,24 +363,24 @@
                         </a>
                         </li> -->
                         <li class="mb-3">
-                        <a href="mailto:support@aquacare-laundry.com" target="_blank" style="text-decoration: none;">
+                            <a href="mailto:support@aquacare-laundry.com" target="_blank" style="text-decoration: none;">
 
-                            <span class="fa-li"><i class="fas fa-envelope"></i></span><span class="ms-2">support@aquacare-laundry.com</span>
-                        </a>
+                                <span class="fa-li"><i class="fas fa-envelope"></i></span><span class="ms-2">support@aquacare-laundry.com</span>
+                            </a>
                         </li>
                         <li class="mb-3">
                             <a href="tel:+971506689921" style="text-decoration: none;">
                                 <span class="fa-li"><i class="fas fa-phone"></i>
-                            
-                            </span><span dir="ltr" class="ms-2">+971 506 689 921</span>
+
+                                </span><span dir="ltr" class="ms-2">+971 506 689 921</span>
                             </a>
                         </li>
                         <li class="mb-3">
                             <a href="https://wa.me/+971506689921" style="text-decoration: none;">
                                 <span class="fa-li">
                                     <i style="color:rgb(9, 217,9)" class="fa-brands fa-whatsapp"></i></span>
-                            
-                            <span dir="ltr" class="ms-2">+971 506 689 921</span>
+
+                                <span dir="ltr" class="ms-2">+971 506 689 921</span>
                             </a>
                         </li>
                     </ul>
