@@ -19,7 +19,7 @@ class ApiToken
 
         App::setLocale($request->header('Accept-Language'));
 
-        if($request->header('api-token') != 'gh-general')
+        if($request->header('api-token') != 'aquacare212')
             return response()->json(null,404);
 
         return $next($request);

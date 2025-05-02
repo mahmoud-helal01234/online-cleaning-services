@@ -175,7 +175,10 @@ class OrdersService
 
             
         });
-        
+
+        });
+  
+  
             // Log::info("before send  notification " .$subscribers );
 
             if (!empty($admins) &&  $admins != null) {
@@ -191,6 +194,7 @@ class OrdersService
 
                 // $this->sendNotification($data_send = $notification, $subscribers);
             }
+
         try{
             
             Mail::to(env('NOTIFICATION_EMAIL','aquacarelaundry@gmail.com'))
@@ -205,11 +209,7 @@ class OrdersService
 
         // end notifications
 
-        try {
-        } catch (\Exception $ex) {
-
-            throw new HttpResponseException($this->apiResponse(status: false));
-        }
+        
     }
 
 

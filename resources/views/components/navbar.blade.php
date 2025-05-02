@@ -15,8 +15,8 @@ $regions = Region::all(); // Fetch all regions
                 <!-- <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">@lang('page.home')</a></li> -->
                 <!-- <li class="nav-item"><a class="nav-link" href="/what-we-do">@lang('page.what_we_do')</a></li> -->
                 <!-- <li class="nav-item"><a class="nav-link" href="#!">@lang('page.about')</a></li> -->
-                <li class="nav-item"><a class="nav-link" href="tel:+971506689921"><i class="fa fa-phone" style="color:rgb(5, 145,229)"></i> <span dir="ltr">+971 506 689 921</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="https://wa.me/+971506689921"><i class="fa-brands fa-whatsapp" style="color:rgb(9, 217,9)"></i> <span dir="ltr">+971 506 689 921</span></a></li>
+                <!-- <li class="nav-item"><a class="nav-link" href="tel:+971506689921"><i class="fa fa-phone" style="color:rgb(5, 145,229)"></i> <span dir="ltr">+971 506 689 921</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="https://wa.me/+971506689921"><i class="fa-brands fa-whatsapp" style="color:rgb(9, 217,9)"></i> <span dir="ltr">+971 506 689 921</span></a></li> -->
                 <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="regionsDropdown" role="button" data-bs-toggle="dropdown">
                             @lang('page.choose_region')
