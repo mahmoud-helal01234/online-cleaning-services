@@ -1,3 +1,9 @@
+@php
+use App\Models\Region;
+
+$regions = Region::all(); // Fetch all regions
+@endphp
+
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark text-white">
     <div class="container px-4 px-lg-7">
@@ -9,17 +15,27 @@
                 <!-- <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">@lang('page.home')</a></li> -->
                 <!-- <li class="nav-item"><a class="nav-link" href="/what-we-do">@lang('page.what_we_do')</a></li> -->
                 <!-- <li class="nav-item"><a class="nav-link" href="#!">@lang('page.about')</a></li> -->
-                <li class="nav-item"><a class="nav-link" href="tel:+971506689921"><i class="fa fa-phone" style="color:rgb(5, 145,229)"></i> <span dir="ltr">+971 506 689 921</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="https://wa.me/+971506689921"><i class="fa-brands fa-whatsapp" style="color:rgb(9, 217,9)"></i> <span dir="ltr">+971 506 689 921</span></a></li>
+                <!-- <li class="nav-item"><a class="nav-link" href="tel:+971506689921"><i class="fa fa-phone" style="color:rgb(5, 145,229)"></i> <span dir="ltr">+971 506 689 921</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="https://wa.me/+971506689921"><i class="fa-brands fa-whatsapp" style="color:rgb(9, 217,9)"></i> <span dir="ltr">+971 506 689 921</span></a></li> -->
+                <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="regionsDropdown" role="button" data-bs-toggle="dropdown">
+                            @lang('page.choose_region')
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="regionsDropdown" style="z-index: 10503232;">
+                            @foreach($regions as $region)
+                            <li><a  class="region-item dropdown-item" href="#" data-value-ar="{{ $region->name_ar }}" data-value-en="{{ $region->name_en }}"> {{ app()->getLocale() == 'ar' ? $region->name_ar :  $region->name_en }}</a></li>
+                            @endforeach
+                        </ul>
+                    </li>
             </ul>
                       <!-- Language Switcher -->
                       <div class="btn-group ms-2">
                 @if (app()->getLocale() == 'en')
-                    <a href="{{ url('lang/ar') }}" class="btn btn-outline-light" style="border-radius: 20px; padding: 0.5rem 1rem;">
+                    <a href="{{ url('?lang=ar') }}" class="btn btn-outline-light" style="border-radius: 20px; padding: 0.5rem 1rem;">
                         <i class="fa fa-language" ></i> اللغة العربية
                     </a>
                 @else
-                    <a href="{{ url('lang/en') }}" class="btn btn-outline-light" style="border-radius: 20px; padding: 0.5rem 1rem;">
+                    <a href="{{ url('?lang=en') }}" class="btn btn-outline-light" style="border-radius: 20px; padding: 0.5rem 1rem;">
                     <i class="fa fa-language" ></i> English
                     </a>
                 @endif
@@ -34,3 +50,55 @@
         </div>
     </div>
 </nav>
+<input type="hidden" id="selectedRegion" name="selectedRegion" value="">
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const dropdownItems = document.querySelectorAll('.region-item');
+        const dropdownToggle = document.getElementById('regionsDropdown');
+        const selectedRegionInput = document.getElementById('selectedRegion');
+
+        // Get the current language from your backend
+        const currentLang = "{{ app()->getLocale() }}";
+
+        // Load saved region ID and language from localStorage
+        const savedRegionId = localStorage.getItem('selectedRegionId');
+        const savedRegionLang = localStorage.getItem('selectedRegionLang');
+
+        // If a region is saved, display the correct name based on the current language
+        if (savedRegionId) {
+            dropdownItems.forEach(item => {
+                if (item.dataset.valueAr === savedRegionId || item.dataset.valueEn === savedRegionId) {
+                    const displayValue = currentLang === 'ar' 
+                        ? item.getAttribute('data-value-ar') 
+                        : item.getAttribute('data-value-en');
+                    dropdownToggle.textContent = displayValue; // Set dropdown text
+                    selectedRegionInput.value = savedRegionId; // Set hidden input value
+                }
+            });
+        }
+
+        // Attach click event listeners to dropdown items
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', function (event) {
+                event.preventDefault(); // Prevent default link behavior
+
+                // Get the selected region ID and name based on the current language
+                const selectedRegionId = currentLang === 'ar' 
+                    ? this.getAttribute('data-value-ar') 
+                    : this.getAttribute('data-value-en');
+                const selectedRegionName = currentLang === 'ar'
+                    ? this.getAttribute('data-value-ar')
+                    : this.getAttribute('data-value-en');
+
+                // Update the dropdown text and hidden input
+                dropdownToggle.textContent = selectedRegionName;
+                selectedRegionInput.value = selectedRegionId;
+
+                // Save the selected region ID and language to localStorage
+                localStorage.setItem('selectedRegionId', selectedRegionId);
+                localStorage.setItem('selectedRegionLang', currentLang);
+            });
+        });
+    });
+</script>

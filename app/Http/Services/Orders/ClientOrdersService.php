@@ -335,7 +335,7 @@ class ClientOrdersService
 
     public function create($order)
     {
-        //dd($order);
+
         $loggedInUser = $this->getLoggedInUser();
         switch ($loggedInUser->role) {
             case "client":

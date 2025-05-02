@@ -18,6 +18,7 @@ class Category extends Model
     protected $fillable = [
 
         'id',
+        'main_category_id',
         'name_ar',
         'name_en',
         'img_path',
@@ -33,5 +34,11 @@ class Category extends Model
     public function products()
     {
         return $this->hasMany(Product::class, "category_id", "id");
+    }
+
+    public function mainCategory()
+    {
+
+        return $this->belongsTo(MainCategory::class, 'main_category_id', 'id');
     }
 }

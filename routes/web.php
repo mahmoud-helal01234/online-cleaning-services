@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\InvoiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,10 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware' => [], 'namespace' => 'App\Http\Controllers'], function () {
+Route::group(['middleware' => ['language'], 'namespace' => 'App\Http\Controllers'], function () {
     
     Route::get('/', 'WebsitePagesController@homePage');
-
+    Route::get('/create-invoice', [InvoiceController::class, 'create'])->name('invoice.create');
+    Route::post('/generate-invoice', [InvoiceController::class, 'generate'])->name('invoice.generate');
+    
 });
 
 

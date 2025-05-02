@@ -20,16 +20,20 @@ class CategoriesService
 
     private $companiesCategoriesService;
     private $proudctsService;
-    public function get()
+    
+    public function get($mainCategoryId = null)
     {
 
         Log::info("start get categories");
 
-
-        $categories = Category::with('products.options')
-            ->get();
+        $categories = Category::with('products.options')->when($mainCategoryId != null,
+        function ($query) use($mainCategoryId){
+            return $query->where('main_category_id',$mainCategoryId);
+        })->get();
         return $categories;
     }
+
+
 
 
 
@@ -117,5 +121,17 @@ class CategoriesService
 
         $this->proudctsService = new ProductsService;
         $this->proudctsService->deleteChildren(categoryId: $categoryId);
+    }
+
+    public function deleteChildren($mainCategoryId = null)
+    {
+        $categories = Category::where('main_category_id', $mainCategoryId)->get();
+        
+
+        foreach ($categories as $category) {
+
+            $this->deleteRelationsWithCategory($category->id);
+            $category->delete();
+        }
     }
 }

@@ -26,7 +26,7 @@ class CategoriesController extends Controller
     public function get()
     {
 
-        $categories = $this->categoriesService->get();
+        $categories = $this->categoriesService->get(request('main_category_id'));
         return $this->apiResponse($categories);
     }
     public function categoryParent($categoryId)
