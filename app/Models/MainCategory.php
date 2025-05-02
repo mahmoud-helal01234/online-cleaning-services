@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
-use App\Models\Company;
-use App\Models\Country;
 use App\Http\Traits\FileUploadTrait;
 use App\Http\Traits\ImagesTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Category extends Model
+class MainCategory extends Model
 {
     use HasFactory;
     use FileUploadTrait;
@@ -18,7 +16,6 @@ class Category extends Model
     protected $fillable = [
 
         'id',
-        'main_category_id',
         'name_ar',
         'name_en',
         'img_path',
@@ -28,17 +25,11 @@ class Category extends Model
     protected $hidden = ['pivot', 'deleted_at'];
     public function setImgPathAttribute($value)
     {
-        $this->attributes['img_path'] = $this->uploadFile($value, 'images/categories', $this->attributes['img_path'] ?? "");
+        $this->attributes['img_path'] = $this->uploadFile($value, 'images/main_categories', $this->attributes['img_path'] ?? "");
     }
 
-    public function products()
+    public function categories()
     {
-        return $this->hasMany(Product::class, "category_id", "id");
-    }
-
-    public function mainCategory()
-    {
-
-        return $this->belongsTo(MainCategory::class, 'main_category_id', 'id');
+        return $this->hasMany(Category::class, "main_category_id", "id");
     }
 }

@@ -56,7 +56,9 @@ class ClientStoreOrderRequest extends FormRequest
     public function messages(): array
     {
 
-        return [];
+        return [
+            "client_name.required" => "Enter your name please"
+        ];
     }
 
     public function failedValidation(Validator $validator)

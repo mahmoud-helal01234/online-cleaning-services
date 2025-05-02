@@ -3,37 +3,33 @@
 namespace App\Http\Services\Products;
 
 use Exception;
-use App\Models\Category;
+use App\Models\MainCategory;
 use App\Http\Traits\ResponsesTrait;
 use Illuminate\Support\Facades\Log;
 use App\Http\Traits\FileUploadTrait;
 use App\Http\Traits\LoggedInUserTrait;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use App\Http\Services\Products\CompaniesCategoriesService;
+use App\Http\Services\Products\CategoriesService;
 
-class CategoriesService
+class MainCategoriesService
 {
 
     use ResponsesTrait;
     use FileUploadTrait;
     use LoggedInUserTrait;
 
-    private $companiesCategoriesService;
-    private $proudctsService;
-    
-    public function get($mainCategoryId = null)
+    private $companiesMainCategoriesService;
+    private $categoriesService;
+    public function get()
     {
 
         Log::info("start get categories");
 
-        $categories = Category::with('products.options')->when($mainCategoryId != null,
-        function ($query) use($mainCategoryId){
-            return $query->where('main_category_id',$mainCategoryId);
-        })->get();
+
+        $categories = MainCategory::with('categories.products.options')
+            ->get();
         return $categories;
     }
-
-
 
 
 
@@ -43,7 +39,7 @@ class CategoriesService
         Log::info("start get category by id");
 
 
-        $category = Category::find($id);
+        $category = MainCategory::find($id);
 
         if ($category == null)
             throw new HttpResponseException($this->apiResponse(null, false, __('validation.not_exist')));
@@ -58,7 +54,7 @@ class CategoriesService
         try {
             Log::info("start create category");
 
-            Category::create($category);
+            MainCategory::create($category);
         } catch (\Exception $ex) {
 
             throw new HttpResponseException($this->apiResponse(status: false));;
@@ -66,16 +62,16 @@ class CategoriesService
     }
 
 
-    public function update($newCategory)
+    public function update($newMainCategory)
     {
 
         Log::info("start update category");
 
-        $category = $this->getById($newCategory['id']);
+        $category = $this->getById($newMainCategory['id']);
 
 
         try {
-            $category->update($newCategory);
+            $category->update($newMainCategory);
             return $category;
         } catch (\Exception $ex) {
 
@@ -107,7 +103,7 @@ class CategoriesService
 
         try {
 
-            $this->deleteRelationsWithCategory($category->id);
+            $this->deleteRelationsWithMainCategory($category->id);
             $category->delete();
 
         } catch (\Exception $ex) {
@@ -116,22 +112,10 @@ class CategoriesService
         }
     }
 
-    public function deleteRelationsWithCategory($categoryId)
+    public function deleteRelationsWithMainCategory($mainCategoryId)
     {
 
-        $this->proudctsService = new ProductsService;
-        $this->proudctsService->deleteChildren(categoryId: $categoryId);
-    }
-
-    public function deleteChildren($mainCategoryId = null)
-    {
-        $categories = Category::where('main_category_id', $mainCategoryId)->get();
-        
-
-        foreach ($categories as $category) {
-
-            $this->deleteRelationsWithCategory($category->id);
-            $category->delete();
-        }
+        $this->categoriesService = new CategoriesService;
+        $this->categoriesService->deleteChildren(mainCategoryId: $mainCategoryId);
     }
 }
