@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Products;
 
 use App\Http\Traits\ResponsesTrait;
 use App\Http\Traits\FileUploadTrait;
-use App\Http\Services\Products\CategoriesService;
-use App\Http\Requests\Category\StoreRequest;
-use App\Http\Requests\Category\UpdateRequest;
+use App\Http\Services\Products\MainCategoriesService;
+use App\Http\Requests\MainCategory\StoreRequest;
+use App\Http\Requests\MainCategory\UpdateRequest;
 use App\Http\Controllers\Controller;
 
-class CategoriesController extends Controller
+class MainCategoriesController extends Controller
 {
 
     use ResponsesTrait;
@@ -19,14 +19,14 @@ class CategoriesController extends Controller
     public function __construct()
     {
 
-        $this->categoriesService = new CategoriesService();
+        $this->categoriesService = new MainCategoriesService();
 
     }
 
     public function get()
     {
 
-        $categories = $this->categoriesService->get(request('main_category_id'));
+        $categories = $this->categoriesService->get();
         return $this->apiResponse($categories);
     }
     public function categoryParent($categoryId)
@@ -35,16 +35,16 @@ class CategoriesController extends Controller
         $categoryParent = $this->categoriesService->categoryParent($categoryId);
         return $this->apiResponse($categoryParent);
     }
-    public function getCategoriesWithSubcategories()
+    public function getMainCategoriesWithSubcategories()
     {
 
-        $categoryWithSub = $this->categoriesService->getCategoriesWithSubcategories();
+        $categoryWithSub = $this->categoriesService->getMainCategoriesWithSubcategories();
         return $this->apiResponse($categoryWithSub);
     }
-    public function selectCategories()
+    public function selectMainCategories()
     {
 
-        $categories = $this->categoriesService->selectCategories(companyId:request('company_id'), haveSubCategories:request('have_sub_categories'), parentId:request('parent_id'));
+        $categories = $this->categoriesService->selectMainCategories(companyId:request('company_id'), haveSubMainCategories:request('have_sub_categories'), parentId:request('parent_id'));
         return $this->apiResponse($categories);
     }
 
