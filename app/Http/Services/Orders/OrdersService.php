@@ -185,7 +185,7 @@ class OrdersService
 
                 // $this->sendNotification($data_send = $notification, $subscribers);
             }
-            Mail::to(env('NOTIFICATION_EMAIL','aquacarelaundry@gmail.com'))->send(new NewOrderNotification($createdOrder, $itemsForEmail,$discountValue));
+            // Mail::to(env('NOTIFICATION_EMAIL','aquacarelaundry@gmail.com'))->send(new NewOrderNotification($createdOrder, $itemsForEmail,$discountValue));
 
         });
 
