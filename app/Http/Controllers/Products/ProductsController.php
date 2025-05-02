@@ -30,7 +30,7 @@ class ProductsController extends Controller
     public function get()
     {
 
-        $products = $this->productsService->get(categoryId: request('category_id'));
+        $products = $this->productsService->get(mainCategoryId: request('main_category_id'),categoryId: request('category_id'));
         return $this->apiResponse($products);
     }
 

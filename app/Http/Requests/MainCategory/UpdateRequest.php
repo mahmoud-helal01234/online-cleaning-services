@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Category;
+namespace App\Http\Requests\MainCategory;
 
 use App\Http\Traits\ResponsesTrait;
 use App\Http\Traits\LoggedInUserTrait;
@@ -44,7 +44,6 @@ class UpdateRequest extends FormRequest
         return [
 
             'id'                    =>  'required|numeric', // checked for existence inside
-            'main_category_id' => 'required|numeric|exists:main_categories,id',
             'name_ar'               =>  'sometimes|nullable|string',
             'name_en'               =>  'sometimes|nullable|string',
             'have_sub_categories'   =>  'sometimes|nullable|in:0,1',
