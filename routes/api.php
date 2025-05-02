@@ -19,6 +19,8 @@ Route::group(['middleware' => ['api'], 'namespace' => 'App\Http\Controllers'], f
         // Route::post('/upload-images', 'ProductsController@uploadImages');
 
         Route::get('category', 'CategoriesController@get'); // parent_id, country_id
+        Route::get('main_category', 'MainCategoriesController@get'); // parent_id, country_id
+
     });
     Route::group(['namespace' => 'Offers'], function () {
         Route::get('promo_code/code/{code}', 'PromoCodesController@getByCode');
