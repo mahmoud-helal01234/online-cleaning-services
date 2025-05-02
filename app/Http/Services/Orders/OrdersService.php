@@ -171,13 +171,8 @@ class OrdersService
                     'order_id' => $createdOrder->id,
 
                 ];
-
-
-            
-        });
-
-        });
-  
+ 
+        });  
   
             // Log::info("before send  notification " .$subscribers );
 
