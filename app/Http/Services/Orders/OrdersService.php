@@ -28,6 +28,7 @@ use App\Http\Services\Orders\ClientOrdersService;
 use App\Models\TransportationPeriodAssignedToDriver;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Http\Services\DriversApp\DriversAppOrdersService;
+use Illuminate\Support\Facades\Log;
 
 class OrdersService
 {
@@ -90,8 +91,10 @@ class OrdersService
         $price = $price < $minOrderPrice ? $minOrderPrice : $price;
 
         $order['price'] = $price;
-
-        DB::transaction(function () use ($order, $productOptions, $loggedInUser,$discountValue) {
+        $notification = null;
+        $createdOrder = null;
+        $itemsForEmail = null;
+        DB::transaction(function () use (&$notification, &$createdOrder, &$itemsForEmail, $order, $productOptions, $loggedInUser,$discountValue) {
             $itemsForEmail = [];
 
             if ($loggedInUser != null) {
@@ -170,6 +173,12 @@ class OrdersService
                 ];
 
 
+            
+        });
+
+        });
+  
+  
             // Log::info("before send  notification " .$subscribers );
 
             if (!empty($admins) &&  $admins != null) {
@@ -185,20 +194,22 @@ class OrdersService
 
                 // $this->sendNotification($data_send = $notification, $subscribers);
             }
-            // Mail::to(env('NOTIFICATION_EMAIL','aquacarelaundry@gmail.com'))->send(new NewOrderNotification($createdOrder, $itemsForEmail,$discountValue));
 
-        });
+        try{
+            
+            Mail::to(env('NOTIFICATION_EMAIL','aquacarelaundry@gmail.com'))
+            ->send(new NewOrderNotification($createdOrder, $itemsForEmail,$discountValue));
+        }catch(Exception $ex)
+        {
+            Log::error('Email with a created order not been sent to the admin.');
 
+        }
 
         // start notifications
 
         // end notifications
 
-        try {
-        } catch (\Exception $ex) {
-
-            throw new HttpResponseException($this->apiResponse(status: false));
-        }
+        
     }
 
 

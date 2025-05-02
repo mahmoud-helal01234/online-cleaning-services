@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Category;
+namespace App\Http\Requests\MainCategory;
 
 use App\Http\Traits\ResponsesTrait;
 use Illuminate\Foundation\Http\FormRequest;
@@ -31,7 +31,7 @@ class StoreRequest extends FormRequest
     {
 
         return [
-            'main_category_id' => 'required|numeric|exists:main_categories,id',
+
             'name_ar'               =>  'required|string',
             'name_en'               =>  'required|string',
             'img_path'              =>  'required|' . FormRequestRulesConstant::ImageValidation 

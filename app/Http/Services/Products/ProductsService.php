@@ -17,7 +17,7 @@ class ProductsService
     use FileUploadTrait;
     use LoggedInUserTrait;
 
-    public function get($categoryId = null)
+    public function get($mainCategoryId = null, $categoryId = null)
     {
 
         // $loggedInUser = $this->getLoggedInUser();
@@ -25,6 +25,10 @@ class ProductsService
         $products = Product::with('options')
             ->when($categoryId != null, function ($query) use ($categoryId) {
                 $query->where('category_id', $categoryId);
+            })->when($mainCategoryId != null, function ($query) use ($mainCategoryId) {
+                $query->whereHas('category.mainCategory', function ($q) use ($mainCategoryId) {
+                    $q->where('id', $mainCategoryId);
+                });
             })->get();
 
         return $products;
