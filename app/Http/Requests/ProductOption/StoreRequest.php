@@ -38,8 +38,6 @@ class StoreRequest extends FormRequest
             'name_ar'       =>  'required|string',
             'name_en'       =>  'required|string',
             'product_id'    =>  "required|numeric|exists:products,id",
-            'price_unit_ar' =>  'required|string',
-            'price_unit_en' =>  'required|string',
             'price'         =>  'required|numeric',
 
         ];

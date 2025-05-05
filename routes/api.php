@@ -15,11 +15,13 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => ['api'], 'namespace' => 'App\Http\Controllers'], function () {
 
     Route::group(['namespace' => 'Products'], function () {
+        Route::get('main_category', 'MainCategoriesController@get'); // parent_id, country_id
+
         // Route::post('/import-products','ProductsController@import');
         // Route::post('/upload-images', 'ProductsController@uploadImages');
+        Route::get('option', 'OptionsController@get');
 
         Route::get('category', 'CategoriesController@get'); // parent_id, country_id
-        Route::get('main_category', 'MainCategoriesController@get'); // parent_id, country_id
 
     });
     Route::group(['namespace' => 'Offers'], function () {
@@ -417,6 +419,7 @@ Route::group(['middleware' => ['api'], 'namespace' => 'App\Http\Controllers'], f
 
 
     Route::group(['namespace' => 'Products'], function () {
+        Route::get('main_category', 'MainCategoriesController@get'); // parent_id, country_id
 
         Route::get('category', 'CategoriesController@get'); // parent_id, country_id
         Route::get('product', 'ProductsController@get');
@@ -431,6 +434,11 @@ Route::group(['middleware' => ['api'], 'namespace' => 'App\Http\Controllers'], f
             Route::post('product', 'ProductsController@create');
             Route::post('product/update', 'ProductsController@update');
             Route::delete('product/{id}', 'ProductsController@delete');
+            Route::get('product/{id}', 'ProductsController@getById');
+
+            Route::post('option', 'OptionsController@create');
+            Route::post('option/update', 'OptionsController@update');
+            Route::delete('option/{id}', 'OptionsController@delete');
 
 
 

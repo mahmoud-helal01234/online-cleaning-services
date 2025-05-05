@@ -13,7 +13,7 @@ class ProductOption extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'id', 'name_ar', 'name_en', 'price', 'product_id', 'created_at', 'updated_at'
+        'id', 'price', 'option_id',  'product_id', 'created_at', 'updated_at'
     ];
     protected $hidden = ['deleted_at'];
 
@@ -21,4 +21,10 @@ class ProductOption extends Model
     {
         return $this->belongsTo(Product::class, 'product_id', 'id');
     }
+    public function option()
+    {
+
+        return $this->belongsTo(Option::class, 'option_id', 'id');
+    }
+
 }
