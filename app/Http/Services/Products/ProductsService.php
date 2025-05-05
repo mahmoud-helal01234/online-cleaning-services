@@ -60,7 +60,8 @@ class ProductsService
 
                 $productOptionsService->create([...$productOption, "product_id" => $createdProduct->id]);
             }
-            return $createdProduct;
+            
+            return Product::find($createdProduct->id);
         } catch (\Exception $ex) {
 
             throw new HttpResponseException($this->apiResponse(status: false));;
@@ -81,7 +82,7 @@ class ProductsService
 
                 $productOptionsService->create([...$productOption, "product_id" => $newProduct['id']]);
             }
-            return $product;
+            return Product::where('id',$newProduct['id'])->with('options')->get()->first();
         } catch (\Exception $ex) {
 
             throw new HttpResponseException($this->apiResponse(status: false));;
