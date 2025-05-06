@@ -423,6 +423,7 @@ Route::group(['middleware' => ['api'], 'namespace' => 'App\Http\Controllers'], f
 
         Route::get('category', 'CategoriesController@get'); // parent_id, country_id
         Route::get('product', 'ProductsController@get');
+        Route::get('review', 'ReviewsController@get');
 
         Route::group(['middleware' => ['authenticate:admin']], function () {
 
@@ -519,6 +520,14 @@ Route::group(['middleware' => ['api'], 'namespace' => 'App\Http\Controllers'], f
             Route::post('social_link/update', 'SocialLinksController@update');
             Route::delete('social_link/{id}', 'SocialLinksController@delete');
 
+            Route::post('floating_social_link', 'FloatingSocialLinksController@create');
+            Route::post('floating_social_link/update', 'FloatingSocialLinksController@update');
+            Route::delete('floating_social_link/{id}', 'FloatingSocialLinksController@delete');
+
+            Route::post('review', 'ReviewsController@create');
+            Route::post('review/update', 'ReviewsController@update');
+            Route::delete('review/{id}', 'ReviewsController@delete');
+
             Route::post('rule', 'RulesController@create');
             Route::post('rule/update', 'RulesController@update');
             Route::delete('rule/{id}', 'RulesController@delete');
@@ -564,6 +573,9 @@ Route::group(['middleware' => ['api'], 'namespace' => 'App\Http\Controllers'], f
         });
         Route::get('rule', 'RulesController@get');
         Route::get('social_link', 'SocialLinksController@get');
+        Route::get('floating_social_link', 'FloatingSocialLinksController@get');
+        Route::get('review', 'FloatingSocialLinksController@get');
+
         Route::get('payment_method', 'PaymentMethodsController@get');
         Route::get('terms_and_conditions', 'TermsAndConditionsController@get');
         Route::get('cooperation_with_us_reason', 'CooperationWithUsReasonsController@get');

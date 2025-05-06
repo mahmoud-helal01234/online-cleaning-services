@@ -32,13 +32,22 @@ class UpdateRequest extends FormRequest
     {
 
         return [
+          
+            'section1_title'          =>  'required|string|max:400',
+            'section1_desc'          =>  'required|string|max:2000',
+            'google_play_link'        =>  'required|string|max:400',
+            'app_store_link'        =>  'required|string|max:400',
+            'about_title'    =>  'required|string|max:500',
+            'about_description'    =>  'required|string|max:2000',
+            'about_image'    =>  'required|string|max:400',
 
-            'title_ar'          =>  'required|string|max:200',
-            'title_en'          =>  'required|string|max:200',
-            'content_ar'        =>  'required|string|max:500',
-            'content_en'        =>  'required|string|max:500',
-            'button_text_ar'    =>  'required|string|max:500',
-            'button_text_en'    =>  'required|string|max:500',
+            'services_title'    =>  'required|string|max:400',
+
+            'services_description'    =>  'required|string|max:2000',
+
+            'our_clients_reviews_title'    =>  'required|string|max:400'
+
+
         ];
 
     }

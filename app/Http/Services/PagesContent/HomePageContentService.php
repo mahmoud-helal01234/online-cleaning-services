@@ -2,8 +2,11 @@
 
 namespace App\Http\Services\PagesContent;
 
+use App\Models\Review;
+use App\Models\SocialLink;
 use App\Models\HomePageContent;
 use App\Models\HomeSliderImage;
+use App\Models\FloatingSocialLink;
 use App\Http\Traits\ResponsesTrait;
 use App\Http\Traits\FileUploadTrait;
 use App\Http\Traits\LoggedInUserTrait;
@@ -28,9 +31,10 @@ class HomePageContentService
                 return $data;
             }
         }
-
         $data = HomePageContent::first();
-        $data['slider_images'] = HomeSliderImage::where('active', 1)->orderBy('created_at', 'DESC')->select('img_path')->get();
+        $data['floating_social_link'] = FloatingSocialLink::where('active', 1)->orderBy('created_at', 'DESC')->select('img_path')->get();
+        $data['social_links'] = SocialLink::where('active', 1)->orderBy('created_at', 'DESC')->select('img_path')->get();
+        $data['reviews'] = Review::where('active', 1)->orderBy('created_at', 'DESC')->select('img_path')->get();
 
         return $data;
     }

@@ -15,10 +15,17 @@ class HomePageContent extends Model
     use FileUploadTrait;
     protected $fillable = [
 
-        'title_ar',	'title_en',	'content_ar', 'content_en', 'button_text_ar', 'button_text_en'
+        "section1_title",
+        "section1_desc",
+        "google_play_link",
+        "app_store_link",
+        "about_title",
+        "about_description",
+        "about_image",
+        "services_title",
+        "services_description",
+        "our_clients_reviews_title"
     ];
 
     public $timestamps = false;
-
-
 }

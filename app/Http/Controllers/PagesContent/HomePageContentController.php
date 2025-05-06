@@ -33,8 +33,8 @@ class HomePageContentController extends Controller
     {
 
         $homePageContent = $request->validated();
-        $this->homePageContentService->update($homePageContent);
-        return $this->apiResponse();
+        $updatedHomePageContent = $this->homePageContentService->update($homePageContent);
+        return $this->apiResponse($updatedHomePageContent);
     }
 
 }
