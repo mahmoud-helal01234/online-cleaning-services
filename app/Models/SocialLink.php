@@ -16,7 +16,7 @@ class SocialLink extends Model
 
     protected $fillable = [
 
-        'img_path', 'link', 'created_at', 'updated_at', 'active'
+        'img_path', 'name_en', 'name_ar', 'link', 'created_at', 'updated_at', 'active', 'is_floating'
     ];
     protected $hidden = ['deleted_at'];
 

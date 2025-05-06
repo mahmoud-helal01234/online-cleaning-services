@@ -45,10 +45,10 @@ class StoreRequest extends FormRequest
                 'name_ar'           =>  'required|string',
                 'name_en'           =>  'required|string',
                 'category_id'       =>  "required|numeric|exists:categories,id",
+                'img_path'          =>  'required|' . FormRequestRulesConstant::ImageValidation,
 
                 'options'                   =>  'required|array',
                 'options.*.option_id'         =>  'required|exists:options,id',
-
                 'options.*.price'           =>  'required|numeric|min:0'
             ];
     }

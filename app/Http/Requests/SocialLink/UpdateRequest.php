@@ -32,8 +32,11 @@ class UpdateRequest extends FormRequest
         return [
 
             'id'        => 'required|numeric|exists:social_links,id',
+            'name_ar'           =>  'required|string',
+            'name_en'           =>  'required|string',
             'link'   =>  'required|string|max:100',
-            'img_path'  => 'sometimes|'.FormRequestRulesConstant::ImageValidation
+            'img_path'  => 'sometimes|'.FormRequestRulesConstant::ImageValidation,
+            'is_floating'   =>  'required|numeric:0,1'
         ];
     }
 

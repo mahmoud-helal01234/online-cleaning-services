@@ -574,7 +574,7 @@ Route::group(['middleware' => ['api'], 'namespace' => 'App\Http\Controllers'], f
         Route::get('rule', 'RulesController@get');
         Route::get('social_link', 'SocialLinksController@get');
         Route::get('floating_social_link', 'FloatingSocialLinksController@get');
-        Route::get('review', 'FloatingSocialLinksController@get');
+        Route::get('review', 'ReviewsController@get');
 
         Route::get('payment_method', 'PaymentMethodsController@get');
         Route::get('terms_and_conditions', 'TermsAndConditionsController@get');

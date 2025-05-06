@@ -56,6 +56,7 @@ class UpdateRequest extends FormRequest
             'name_ar'           =>  'required|string',
             'name_en'           =>  'required|string',
             'category_id'       =>  "required|numeric|exists:categories,id",
+            'img_path'          =>  'sometimes|' . FormRequestRulesConstant::ImageValidation,
 
             'options'                   =>  'required|array',
             'options.*.option_id'         =>  'required|exists:options,id',
