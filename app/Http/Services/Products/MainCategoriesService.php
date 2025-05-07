@@ -54,7 +54,7 @@ class MainCategoriesService
         try {
             Log::info("start create category");
 
-            MainCategory::create($category);
+            return MainCategory::create($category);
         } catch (\Exception $ex) {
 
             throw new HttpResponseException($this->apiResponse(status: false));;
@@ -69,10 +69,12 @@ class MainCategoriesService
 
         $category = $this->getById($newMainCategory['id']);
 
-
         try {
+
             $category->update($newMainCategory);
+
             return $category;
+
         } catch (\Exception $ex) {
 
             throw new HttpResponseException($this->apiResponse(status: false));;
@@ -105,7 +107,6 @@ class MainCategoriesService
 
             $this->deleteRelationsWithMainCategory($category->id);
             $category->delete();
-
         } catch (\Exception $ex) {
 
             throw new HttpResponseException($this->apiResponse(null, false, __('validation.cannot_delete')));

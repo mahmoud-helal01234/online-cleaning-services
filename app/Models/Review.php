@@ -16,12 +16,17 @@ class Review extends Model
 
     protected $fillable = [
 
-        'name_ar','name_en', 'img_path', 'title', 'description', 'created_at', 'updated_at', 'active'
+        'name_ar','name_en', 
+        'img_path', 
+        'title_ar','title_en', 
+        'description_ar','description_en', 
+        'created_at', 'updated_at', 
+        'active'
     ];
     protected $hidden = ['deleted_at'];
 
     public function setImgPathAttribute($value)
     {
-        $this->attributes['img_path'] = $this->uploadFile($value, 'images/floating_social_links', $this->attributes['img_path'] ?? "");
+        $this->attributes['img_path'] = $this->uploadFile($value, 'images/reviews', $this->attributes['img_path'] ?? "");
     }
 }

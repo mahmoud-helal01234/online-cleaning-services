@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Http\Traits\ResponsesTrait;
+use App\Http\Constants\FormRequestRulesConstant;
 
 class UpdateRequest extends FormRequest
 {
@@ -32,39 +33,38 @@ class UpdateRequest extends FormRequest
     {
 
         return [
-          
-            'section1_title'          =>  'required|string|max:400',
-            'section1_desc'          =>  'required|string|max:2000',
+
+            'section1_title_en'          =>  'required|string|max:400',
+            'section1_title_ar'          =>  'required|string|max:400',
+
+            'section1_desc_en'          =>  'required|string|max:2000',
+            'section1_desc_ar'          =>  'required|string|max:2000',
+
             'google_play_link'        =>  'required|string|max:400',
             'app_store_link'        =>  'required|string|max:400',
-            'about_title'    =>  'required|string|max:500',
-            'about_description'    =>  'required|string|max:2000',
-            'about_image'    =>  'required|string|max:400',
 
-            'services_title'    =>  'required|string|max:400',
+            'about_title_en'    =>  'required|string|max:500',
 
-            'services_description'    =>  'required|string|max:2000',
+            'about_title_ar'    =>  'required|string|max:500',
+            'about_description_en'    =>  'required|string|max:2000',
+            'about_description_ar'    =>  'required|string|max:2000',
 
-            'our_clients_reviews_title'    =>  'required|string|max:400'
+            'about_image'       =>  'required|' . FormRequestRulesConstant::ImageValidation,
 
+            'services_title_ar'    =>  'required|string|max:400',
+            'services_title_en'    =>  'required|string|max:400',
+
+            'services_description_ar'    =>  'required|string|max:2000',
+            'services_description_en'    =>  'required|string|max:2000',
+
+            'our_clients_reviews_title_ar'    =>  'required|string|max:400',
+            'our_clients_reviews_title_en'    =>  'required|string|max:400'
 
         ];
 
     }
 
-    public function messages(): array
-    {
-
-        return [
-            'title_ar.required' => __('validation.title_ar.required'),
-            'title_en.required' => __('validation.title_en.required'),
-            'content_ar.required' => __('validation.content_ar.required'),
-            'content_en.required' => __('validation.content_en.required'),
-            'button_text_ar.required' => __('validation.button_text_ar.required'),
-            'button_text_en.required' => __('validation.button_text_en.required'),
-        ];
-    }
-
+   
     public function failedValidation(Validator $validator)
     {
 

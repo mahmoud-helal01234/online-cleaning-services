@@ -46,7 +46,8 @@ class UpdateRequest extends FormRequest
             'id'                    =>  'required|numeric', // checked for existence inside
             'name_ar'               =>  'sometimes|nullable|string',
             'name_en'               =>  'sometimes|nullable|string',
-            'description'               =>  'required|string',
+            'description_ar'               =>  'required|string',
+            'description_en'               =>  'required|string',
             'have_sub_categories'   =>  'sometimes|nullable|in:0,1',
             'img_path'              =>  'sometimes|nullable|' . FormRequestRulesConstant::ImageValidation,
         ];

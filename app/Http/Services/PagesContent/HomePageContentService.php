@@ -24,8 +24,8 @@ class HomePageContentService
 
         $loggedInUser = $this->getLoggedInUser();
 
-        if ($loggedInUser != null){
-            if($loggedInUser->role == "admin"){
+        if ($loggedInUser != null) {
+            if ($loggedInUser->role == "admin") {
 
                 $data = HomePageContent::first();
                 return $data;
@@ -43,12 +43,12 @@ class HomePageContentService
     {
 
         try {
-
             $homePageContent = HomePageContent::updateOrCreate(['id' => 1], $newHomePageContent);
+
             return $homePageContent;
         } catch (\Exception $ex) {
 
-            throw new HttpResponseException($this->apiResponse(status:false));;
+            throw new HttpResponseException($this->apiResponse(status: false));;
         }
     }
 }

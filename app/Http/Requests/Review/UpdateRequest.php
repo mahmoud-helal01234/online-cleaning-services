@@ -32,11 +32,22 @@ class UpdateRequest extends FormRequest
         return [
 
             'id'        => 'required|numeric|exists:social_links,id',
+
             'name_ar'   =>  'required|string|max:100',
+
             'name_en'   =>  'required|string|max:100',
 
-            'link'   =>  'required|string|max:100',
-            'img_path'  => 'sometimes|'.FormRequestRulesConstant::ImageValidation
+            'description_ar'   =>  'required|string|max:100',
+
+            'description_en'   =>  'required|string|max:100',
+
+            'title_ar'   =>  'required|string|max:100',
+            
+            'title_en'   =>  'required|string|max:100',
+
+            'img_path'  =>  'required|'.FormRequestRulesConstant::ImageValidation,
+
+            'active'   =>  'required|numeric|in:0,1'
         ];
     }
 
