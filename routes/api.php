@@ -432,6 +432,11 @@ Route::group(['middleware' => ['api'], 'namespace' => 'App\Http\Controllers'], f
             Route::delete('category/{id}', 'CategoriesController@delete');
             Route::get('category/{id}/activate/{activationStatus}', 'CategoriesController@toggleActivation');
 
+            Route::post('main_category', 'MainCategoriesController@create');
+            Route::post('main_category/update', 'MainCategoriesController@update');
+            Route::delete('main_category/{id}', 'MainCategoriesController@delete');
+            Route::get('main_category/{id}/activate/{activationStatus}', 'MainCategoriesController@toggleActivation');
+
             Route::post('product', 'ProductsController@create');
             Route::post('product/update', 'ProductsController@update');
             Route::delete('product/{id}', 'ProductsController@delete');

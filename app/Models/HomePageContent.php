@@ -17,6 +17,8 @@ class HomePageContent extends Model
 
         "section1_title_en",
         "section1_desc_en",
+        "section1_sub_title_ar",
+        "section1_sub_title_en",
         "google_play_link",
         "app_store_link",
         "about_title_en",

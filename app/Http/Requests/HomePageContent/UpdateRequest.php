@@ -37,6 +37,9 @@ class UpdateRequest extends FormRequest
             'section1_title_en'          =>  'required|string|max:400',
             'section1_title_ar'          =>  'required|string|max:400',
 
+            'section1_sub_title_en'          =>  'required|string|max:400',
+            'section1_sub_title_ar'          =>  'required|string|max:400',
+
             'section1_desc_en'          =>  'required|string|max:2000',
             'section1_desc_ar'          =>  'required|string|max:2000',
 
@@ -49,7 +52,7 @@ class UpdateRequest extends FormRequest
             'about_description_en'    =>  'required|string|max:2000',
             'about_description_ar'    =>  'required|string|max:2000',
 
-            'about_image'       =>  'required|' . FormRequestRulesConstant::ImageValidation,
+            'about_image'       =>  'sometimes|' . FormRequestRulesConstant::ImageValidation,
 
             'services_title_ar'    =>  'required|string|max:400',
             'services_title_en'    =>  'required|string|max:400',
