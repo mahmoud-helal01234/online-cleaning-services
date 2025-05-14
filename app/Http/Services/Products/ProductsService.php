@@ -25,7 +25,12 @@ class ProductsService
         $products = Product::with('options.option')
             ->when($categoryIds != null, function ($query) use ($categoryIds) {
                 $query->whereIn('category_id', $categoryIds);
-            })->get();
+            })->when($mainCategoryIds != null, function ($query) use ($mainCategoryIds) {
+            $query->whereHas('category', function ($q) use ($mainCategoryIds) {
+                $q->whereIn('main_category_id', $mainCategoryIds);
+            });
+        })
+        ->get();
 
         return $products;
         // return ProductsResource::collection($products);

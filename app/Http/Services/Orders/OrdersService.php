@@ -194,6 +194,8 @@ class OrdersService
             
             Mail::to(env('NOTIFICATION_EMAIL','aquacarelaundry@gmail.com'))
             ->send(new NewOrderNotification($createdOrder, $itemsForEmail,$discountValue));
+            return $createdOrder;
+
         }catch(Exception $ex)
         {
             Log::error('Email with a created order not been sent to the admin.');
