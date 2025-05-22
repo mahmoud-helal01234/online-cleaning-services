@@ -49,7 +49,8 @@ class StoreRequest extends FormRequest
 
                 'options'                   =>  'required|array',
                 'options.*.option_id'         =>  'required|exists:options,id',
-                'options.*.price'           =>  'required|numeric|min:0'
+                'options.*.price'           =>  'required|numeric|min:0',
+                'is_in_price_list'  =>  'numeric|nullable|in:0,1'
             ];
     }
 

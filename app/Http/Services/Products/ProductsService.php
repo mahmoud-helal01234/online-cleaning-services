@@ -22,10 +22,10 @@ class ProductsService
 
         // $loggedInUser = $this->getLoggedInUser();
 
-        $products = Product::with('options.option')
+        $products = Product::with('options.option','category')
             ->when($categoryIds != null, function ($query) use ($categoryIds) {
                 $query->whereIn('category_id', $categoryIds);
-            })->when($mainCategoryIds != null, function ($query) use ($mainCategoryIds) {
+            })->when($mainCategoryIds != null && $categoryIds == null, function ($query) use ($mainCategoryIds) {
             $query->whereHas('category', function ($q) use ($mainCategoryIds) {
                 $q->whereIn('main_category_id', $mainCategoryIds);
             });
@@ -39,7 +39,7 @@ class ProductsService
     public function getById($id)
     {
 
-        $product = Product::where('id', $id)->with('options.option')->first();
+        $product = Product::where('id', $id)->with('options.option','category')->first();
 
         if ($product == null)
             throw new HttpResponseException($this->apiResponse(null, false, __('validation.not_exist')));

@@ -41,8 +41,6 @@ class OrdersService
     public function createForClient($order)
     {
 
-
-        // dd($order);
         $loggedInUser = $this->getLoggedInUser();
         if ($loggedInUser != null) {
 
@@ -797,7 +795,7 @@ class OrdersService
                 'promoCode',
                 'location',
                 'client',
-                'items',
+                'items.option',
                 'pickupDriver:id,name,email',
                 'deliveryDriver:id,name,email',
             ]
