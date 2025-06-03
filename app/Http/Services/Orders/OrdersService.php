@@ -64,8 +64,8 @@ class OrdersService
         foreach ($order['items'] as $orderItem) {
 
             $productOption = $productOptions->where('id', $orderItem['id'])->first();
-
-            $price +=  $productOption['price'] * $orderItem['quantity'];
+            $productOptionPrice = $productOption['discounted_price'] == null ?  $productOption['price'] : $productOption['discounted_price']; 
+            $price +=  $productOptionPrice * $orderItem['quantity'];
         }
         $discountValue = 0;
         // apply discount 
@@ -126,14 +126,14 @@ class OrdersService
                     'name_en' => $productOption->product->name_en . " - " . $productOption->name_en,
                     'name_ar' => $productOption->product->name_ar . " - " . $productOption->name_ar,
 
-                    'price' => $productOption->price,
+                    'price' => $productOption->discounted_price ?? $productOption->price ,
                     'quantity' => $orderItem['quantity']
                 ]);
 
                 $itemsForEmail[] = [
                     'name_en' => $productOption->product->name_en . ' - ' . $productOption->name_en,
                     'name_ar' => $productOption->product->name_ar . ' - ' . $productOption->name_ar,
-                    'price' => $productOption->price,
+                    'price' => $productOption->discounted_price ?? $productOption->price,
                     'quantity' => $orderItem['quantity'],
                 ];
         
