@@ -37,7 +37,7 @@ class ClientStoreOrderRequest extends FormRequest
             'address' => 'required|string|max:500',
             'promo_code_id' => 'sometimes|nullable|exists:promo_codes,id,active,1',
 
-            'preferred_pickup_time' => 'required|date_format:Y-m-d H:i',
+            // 'preferred_pickup_time' => 'required|date_format:Y-m-d H:i',
             'items' => 'required|array',
             'items.*.id' =>  [
                 'required',
