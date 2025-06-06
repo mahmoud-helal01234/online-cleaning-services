@@ -50,10 +50,11 @@ class ProductsService
     public function create($product)
     {
 
-        try {
+        // try {
             $user = $this->getLoggedInUser();
 
             $createdProduct = Product::create($product);
+
             $productOptionsService = new ProductOptionsService();
 
             foreach ($product['options'] as $productOption) {
@@ -62,10 +63,10 @@ class ProductsService
             }
             
             return $this->getById($createdProduct->id);
-        } catch (\Exception $ex) {
+        // } catch (\Exception $ex) {
 
-            throw new HttpResponseException($this->apiResponse(status: false));;
-        }
+        //     throw new HttpResponseException($this->apiResponse(status: false));;
+        // }
     }
 
     public function update($newProduct)
