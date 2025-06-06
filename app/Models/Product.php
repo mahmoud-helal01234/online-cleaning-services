@@ -28,7 +28,11 @@ class Product extends Model
     //////////////////////////
     protected $fillable = [
 
-        'category_id', 'name_ar', 'name_en', 'img_path', 'created_at', 'updated_at', 'active', 'is_in_price_list'
+        'category_id', 'name_ar', 
+        'name_en', 'img_path', 
+        'created_at', 'updated_at', 
+        'active', 'is_in_price_list',         
+
     ];
     protected $hidden = ['deleted_at'];
 
