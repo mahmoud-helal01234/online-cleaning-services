@@ -26,7 +26,7 @@ class MainCategoriesService
         Log::info("start get categories");
 
 
-        $categories = MainCategory::with('categories.products.options')
+        $categories = MainCategory::with('categories.products.options.option')
             ->get();
         return $categories;
     }
