@@ -16,15 +16,7 @@ class StoreRequest extends FormRequest
 
     // protected $stopOnFirstFailure = true;
 
-    protected function prepareForValidation()
-    {
-
-        if ($this->has('options') && is_string($this->input('options'))) {
-            $this->merge([
-                'options' => json_decode($this->input('options'), true),
-            ]);
-        }
-    }
+    
 
     /**
      * Determine if the user is authorized to make this request.
@@ -53,12 +45,14 @@ class StoreRequest extends FormRequest
                 'name_ar'           =>  'required|string',
                 'name_en'           =>  'required|string',
                 'category_id'       =>  "required|numeric|exists:categories,id",
+                'img_path'          =>  'required|' . FormRequestRulesConstant::ImageValidation,
 
-                'img_path'                  =>  "required|" . FormRequestRulesConstant::ImageValidation,
                 'options'                   =>  'required|array',
-                'options.*.name_ar'         =>  'required|string|max:50',
-                'options.*.name_en'         =>  'required|string|max:50',
-                'options.*.price'           =>  'required|numeric|min:0'
+                'options.*.option_id'         =>  'required|exists:options,id',
+                'options.*.price'           =>  'required|numeric|min:0',
+                'options.*.discounted_price'           =>  'required|nullable|numeric|min:0',
+
+                'is_in_price_list'  =>  'numeric|nullable|in:0,1'
             ];
     }
 

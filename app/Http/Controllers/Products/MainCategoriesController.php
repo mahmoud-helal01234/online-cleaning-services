@@ -29,39 +29,21 @@ class MainCategoriesController extends Controller
         $categories = $this->categoriesService->get();
         return $this->apiResponse($categories);
     }
-    public function categoryParent($categoryId)
-    {
-
-        $categoryParent = $this->categoriesService->categoryParent($categoryId);
-        return $this->apiResponse($categoryParent);
-    }
-    public function getMainCategoriesWithSubcategories()
-    {
-
-        $categoryWithSub = $this->categoriesService->getMainCategoriesWithSubcategories();
-        return $this->apiResponse($categoryWithSub);
-    }
-    public function selectMainCategories()
-    {
-
-        $categories = $this->categoriesService->selectMainCategories(companyId:request('company_id'), haveSubMainCategories:request('have_sub_categories'), parentId:request('parent_id'));
-        return $this->apiResponse($categories);
-    }
 
     public function create(StoreRequest $request)
     {
 
-        $category = $request->validated();
-        $this->categoriesService->create($category);
-        return $this->apiResponse();
+        $mainCategory = $request->validated();
+        $createdMainCategory = $this->categoriesService->create($mainCategory);
+        return $this->apiResponse($createdMainCategory);
     }
 
     public function update(UpdateRequest $request)
     {
 
-        $category = $request->validated();
-        $this->categoriesService->update($category);
-        return $this->apiResponse();
+        $mainCategory = $request->validated();
+        $updatedMainCategory = $this->categoriesService->update($mainCategory);
+        return $this->apiResponse($updatedMainCategory);
     }
 
     public function delete($id)

@@ -38,14 +38,14 @@ class ProductOptionsService
     public function create($productOption)
     {
 
-        try {
+        // try {
 
             $createdProductOption = ProductOption::create($productOption);
             return $createdProductOption;
-        } catch (\Exception $ex) {
+        // } catch (\Exception $ex) {
 
-            throw new HttpResponseException($this->apiResponse(status: false));;
-        }
+        //     throw new HttpResponseException($this->apiResponse(status: false));;
+        // }
     }
 
     public function update($newProductOption)

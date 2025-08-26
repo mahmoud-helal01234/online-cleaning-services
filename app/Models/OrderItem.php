@@ -18,7 +18,12 @@ class OrderItem extends Model
     protected $hidden = ['deleted_at'];
 
     public $timestamps = false;
+    
+    public function option()
+    {
 
+        return $this->belongsTo(ProductOption::class, 'product_option_id', 'id')->with('product','option');
+    }
 
     public function order()
     {

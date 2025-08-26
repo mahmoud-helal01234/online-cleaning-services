@@ -20,6 +20,8 @@ class MainCategory extends Model
         'name_en',
         'img_path',
         'active',
+        'description_ar',
+        'description_en'
     ];
 
     protected $hidden = ['pivot', 'deleted_at'];

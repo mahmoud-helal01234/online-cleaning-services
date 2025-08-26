@@ -41,8 +41,6 @@ class OrdersService
     public function createForClient($order)
     {
 
-
-        // dd($order);
         $loggedInUser = $this->getLoggedInUser();
         if ($loggedInUser != null) {
 
@@ -66,8 +64,8 @@ class OrdersService
         foreach ($order['items'] as $orderItem) {
 
             $productOption = $productOptions->where('id', $orderItem['id'])->first();
-
-            $price +=  $productOption['price'] * $orderItem['quantity'];
+            $productOptionPrice = $productOption['discounted_price'] == null ?  $productOption['price'] : $productOption['discounted_price']; 
+            $price +=  $productOptionPrice * $orderItem['quantity'];
         }
         $discountValue = 0;
         // apply discount 
@@ -128,14 +126,14 @@ class OrdersService
                     'name_en' => $productOption->product->name_en . " - " . $productOption->name_en,
                     'name_ar' => $productOption->product->name_ar . " - " . $productOption->name_ar,
 
-                    'price' => $productOption->price,
+                    'price' => $productOption->discounted_price ?? $productOption->price ,
                     'quantity' => $orderItem['quantity']
                 ]);
 
                 $itemsForEmail[] = [
                     'name_en' => $productOption->product->name_en . ' - ' . $productOption->name_en,
                     'name_ar' => $productOption->product->name_ar . ' - ' . $productOption->name_ar,
-                    'price' => $productOption->price,
+                    'price' => $productOption->discounted_price ?? $productOption->price,
                     'quantity' => $orderItem['quantity'],
                 ];
         
@@ -194,6 +192,8 @@ class OrdersService
             
             Mail::to(env('NOTIFICATION_EMAIL','aquacarelaundry@gmail.com'))
             ->send(new NewOrderNotification($createdOrder, $itemsForEmail,$discountValue));
+            return $createdOrder;
+
         }catch(Exception $ex)
         {
             Log::error('Email with a created order not been sent to the admin.');
@@ -795,7 +795,7 @@ class OrdersService
                 'promoCode',
                 'location',
                 'client',
-                'items',
+                'items.option',
                 'pickupDriver:id,name,email',
                 'deliveryDriver:id,name,email',
             ]

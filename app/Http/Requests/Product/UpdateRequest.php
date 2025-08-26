@@ -39,7 +39,7 @@ class UpdateRequest extends FormRequest
     public function authorize()
     {
 
-        return $this->productsService->canUserUpdate(request('id') );
+        return $this->productsService->canUserUpdate(request('id'));
     }
 
     /**
@@ -53,44 +53,32 @@ class UpdateRequest extends FormRequest
         return [
 
             'id'        => 'required|numeric',
-            'name_ar' =>             'required|string',
-            'name_en' =>             'required|string',
-            'img_path'    =>  "sometimes|".FormRequestRulesConstant::ImageValidation,
-            'options'     =>  'required|array',
-            'options.*.name_ar'     =>  'required|string|max:50',
-            'options.*.name_en'     =>  'required|string|max:50',
-            'options.*.price'     =>  'required|numeric|min:0',
-            'options.*.active'     =>  'sometimes|numeric|in:0,1'
+            'name_ar'           =>  'required|string',
+            'name_en'           =>  'required|string',
+            'category_id'       =>  "required|numeric|exists:categories,id",
+            'img_path'          =>  'sometimes|' . FormRequestRulesConstant::ImageValidation,
+
+            'options'                   =>  'required|array',
+            'options.*.option_id'         =>  'required|exists:options,id',
+
+            'options.*.discounted_price'           =>  'required|nullable|numeric|min:0',
+
+            'options.*.price'           =>  'required|numeric|min:0',
+            'is_in_price_list'  =>  'numeric|nullable|in:0,1'
 
         ];
     }
 
-    public function messages(): array {
+    public function messages(): array
+    {
 
-        return [
-            'id.required'  =>  __('validation.id.required'),
-            'id.exists'  =>  __('validation.id.exists'),
-            'name_ar.required'  => __('validation.name_ar.required'),
-            'name_en.required'  => __('validation.name_en.required'),
-            'category_id.required'  => __('validation.id.required'),
-            'category_id.exists'  => __('validation.id.exists'),
-            'company_id.required'  => __('validation.id.required'),
-            'company_id.exists'  => __('validation.id.exists'),
-            'img_path.required'       => __('validation.img_path.required'),
-
-            'options.*.name_ar.required'  => __('validation.name_ar.required'),
-            'options.*.name_en.required'  => __('validation.name_en.required'),
-            'options.*.price_unit_ar.required'  => __('validation.price_unit_ar.required'),
-            'options.*.price_unit_en.required'  => __('validation.price_unit_en.required'),
-            'options.*.price.required'  => __('validation.options.price.required'),
-            'options.*.active.in' => __('validation.active.in')
-        ];
+        return [];
     }
 
     public function failedValidation(Validator $validator)
     {
 
-        throw new HttpResponseException($this->apiResponse(null,false,$validator->errors()->first()));
+        throw new HttpResponseException($this->apiResponse(null, false, $validator->errors()->first()));
     }
 
     public function failedAuthorization()
@@ -98,5 +86,4 @@ class UpdateRequest extends FormRequest
 
         throw new HttpResponseException($this->apiResponse(data: null, status: false, message: __('auth.authorization.not_authorized')));
     }
-
 }

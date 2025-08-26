@@ -27,18 +27,26 @@ class ProductsController extends Controller
         $this->productsService = new ProductsService();
     }
 
+    public function getById()
+    {
+
+        $products = $this->productsService->getById(id: request('id'));
+        return $this->apiResponse($products);
+    }
     public function get()
     {
 
-        $products = $this->productsService->get(mainCategoryId: request('main_category_id'),categoryId: request('category_id'));
+        $products = $this->productsService->get(mainCategoryIds: request('main_category_ids'),categoryIds: request('category_ids'));
         return $this->apiResponse($products);
     }
 
     public function create(StoreRequest $request)
     {
+
         $data = $request->validated();
-        $this->productsService->create($data);
-        return $this->apiResponse();
+
+        $createdProduct = $this->productsService->create($data);
+        return $this->apiResponse($createdProduct);
     }
 
     public function uploadImages(Request $request)
@@ -139,8 +147,8 @@ class ProductsController extends Controller
     {
 
         $product = $request->validated();
-        $this->productsService->update($product);
-        return $this->apiResponse();
+        $updatedProduct = $this->productsService->update($product);
+        return $this->apiResponse($updatedProduct);
     }
 
     public function toggleActivation($id, $activationStatus)

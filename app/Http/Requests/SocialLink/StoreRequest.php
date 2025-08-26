@@ -33,9 +33,12 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
+            'name_ar'           =>  'required|string',
+            'name_en'           =>  'required|string',
 
             'link'   =>  'required|string|max:100',
-            'img_path'  =>  'required|'.FormRequestRulesConstant::ImageValidation
+            'img_path'  =>  'required|'.FormRequestRulesConstant::ImageValidation,
+            'is_floating'   =>  'required|numeric:0,1'
         ];
     }
 

@@ -52,16 +52,16 @@ class CategoriesController extends Controller
     {
 
         $category = $request->validated();
-        $this->categoriesService->create($category);
-        return $this->apiResponse();
+        $createdCategory = $this->categoriesService->create($category);
+        return $this->apiResponse($createdCategory);
     }
 
     public function update(UpdateRequest $request)
     {
 
         $category = $request->validated();
-        $this->categoriesService->update($category);
-        return $this->apiResponse();
+        $updatedCategory = $this->categoriesService->update($category);
+        return $this->apiResponse($updatedCategory);
     }
 
     public function delete($id)

@@ -5,6 +5,6 @@ namespace App\Http\Constants;
 
 class FormRequestRulesConstant
 {
-    public const ImageValidation = 'image|mimes:png,jpg|max:10000';
+    public const ImageValidation = 'image|mimes:png,jpg,webp|max:10000';
 }
 

@@ -52,13 +52,13 @@ class OrdersController extends Controller
         return $this->apiResponse($orders);
     }
 
-    public function createForClient(ClientStoreOrderRequest $request)
+     public function createForClient(ClientStoreOrderRequest $request)
     {
 
         $data = $request->validated();
         
-        $this->ordersService->createForClient($data);
-        return $this->apiResponse();
+        $createdOrder = $this->ordersService->createForClient($data);
+        return $this->apiResponse($createdOrder);
     }
 
     public function changeOrderStatus($id,$status)

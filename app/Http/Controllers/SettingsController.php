@@ -34,5 +34,19 @@ class SettingsController extends Controller
         $this->settingsService->update($settings);
         return $this->apiResponse();
     }
-
+    
+    
 }
+
+/* 
+
+section1_title, section1_desc, google play link, app store link, 
+    about_title, about_description, about_image
+    services_title, services_description
+    our_clients_reviews_title
+    list of reviews
+    (client name, image, title, description)
+    floating social links list of (image, link)
+    navbar_social_links list of (image, link)
+
+*/

@@ -17,19 +17,20 @@ class ProductsService
     use FileUploadTrait;
     use LoggedInUserTrait;
 
-    public function get($mainCategoryId = null, $categoryId = null)
+    public function get($mainCategoryIds = null, $categoryIds = null)
     {
 
         // $loggedInUser = $this->getLoggedInUser();
 
-        $products = Product::with('options')
-            ->when($categoryId != null, function ($query) use ($categoryId) {
-                $query->where('category_id', $categoryId);
-            })->when($mainCategoryId != null, function ($query) use ($mainCategoryId) {
-                $query->whereHas('category.mainCategory', function ($q) use ($mainCategoryId) {
-                    $q->where('id', $mainCategoryId);
-                });
-            })->get();
+        $products = Product::with('options.option','category')
+            ->when($categoryIds != null, function ($query) use ($categoryIds) {
+                $query->whereIn('category_id', $categoryIds);
+            })->when($mainCategoryIds != null && $categoryIds == null, function ($query) use ($mainCategoryIds) {
+            $query->whereHas('category', function ($q) use ($mainCategoryIds) {
+                $q->whereIn('main_category_id', $mainCategoryIds);
+            });
+        })
+        ->get();
 
         return $products;
         // return ProductsResource::collection($products);
@@ -38,7 +39,7 @@ class ProductsService
     public function getById($id)
     {
 
-        $product = Product::find($id);
+        $product = Product::where('id', $id)->with('options.option','category')->first();
 
         if ($product == null)
             throw new HttpResponseException($this->apiResponse(null, false, __('validation.not_exist')));
@@ -49,22 +50,23 @@ class ProductsService
     public function create($product)
     {
 
-        try {
-
+        // try {
             $user = $this->getLoggedInUser();
 
             $createdProduct = Product::create($product);
+
             $productOptionsService = new ProductOptionsService();
 
             foreach ($product['options'] as $productOption) {
 
                 $productOptionsService->create([...$productOption, "product_id" => $createdProduct->id]);
             }
-            return $createdProduct;
-        } catch (\Exception $ex) {
+            
+            return $this->getById($createdProduct->id);
+        // } catch (\Exception $ex) {
 
-            throw new HttpResponseException($this->apiResponse(status: false));;
-        }
+        //     throw new HttpResponseException($this->apiResponse(status: false));;
+        // }
     }
 
     public function update($newProduct)
@@ -73,7 +75,7 @@ class ProductsService
         $product = $this->getById($newProduct['id']);
         try {
             // CHECKED IN REQUEST AUTHORIZATION FOR WHO CAN UPDATE
-            $product->update($newProduct);
+            $updatedProduct = $product->update($newProduct);
             $productOptionsService = new ProductOptionsService();
             $productOptionsService->delete(productId: $newProduct['id']);
 
@@ -81,7 +83,7 @@ class ProductsService
 
                 $productOptionsService->create([...$productOption, "product_id" => $newProduct['id']]);
             }
-            return $product;
+            return $this->getById($newProduct['id']);
         } catch (\Exception $ex) {
 
             throw new HttpResponseException($this->apiResponse(status: false));;

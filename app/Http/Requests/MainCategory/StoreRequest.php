@@ -34,6 +34,9 @@ class StoreRequest extends FormRequest
 
             'name_ar'               =>  'required|string',
             'name_en'               =>  'required|string',
+            'description_ar'               =>  'required|string',
+            'description_en'               =>  'required|string',
+            
             'img_path'              =>  'required|' . FormRequestRulesConstant::ImageValidation 
         ];
     }

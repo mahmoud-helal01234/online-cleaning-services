@@ -58,7 +58,7 @@ class CategoriesService
         try {
             Log::info("start create category");
 
-            Category::create($category);
+            return Category::create($category);
         } catch (\Exception $ex) {
 
             throw new HttpResponseException($this->apiResponse(status: false));;

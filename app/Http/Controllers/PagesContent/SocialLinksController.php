@@ -33,8 +33,8 @@ class SocialLinksController extends Controller
     {
 
         $socialLink = $request->validated();
-        $this->socialLinksService->create($socialLink);
-        return $this->apiResponse();
+        $createdSocialLink = $this->socialLinksService->create($socialLink);
+        return $this->apiResponse($createdSocialLink);
     }
 
     public function update(UpdateRequest $request)
@@ -42,9 +42,9 @@ class SocialLinksController extends Controller
 
         $socialLink = $request->validated();
 
-        $this->socialLinksService->update($socialLink);
+        $updatedSocialLink = $this->socialLinksService->update($socialLink);
 
-        return $this->apiResponse();
+        return $this->apiResponse($updatedSocialLink);
 
     }
 
